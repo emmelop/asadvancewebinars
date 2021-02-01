@@ -1,0 +1,19 @@
+{
+	"name": "02_LOAD_SELECT_DIMS",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "\ntruncate table [dim].[Customer]\n\nEXEC [dim].[load_Customer]\n\nSELECT TOP (1000) * FROM [dim].[Customer]\n\ntruncate table [dim].[Product]\n\nEXEC [dim].[load_Product]\n\nSELECT TOP (1000) * FROM [dim].[Product]\n\ntruncate table [dim].[Store]\n\nEXEC [dim].[load_Store]\n\nSELECT TOP (1000) * FROM [dim].[Store]\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

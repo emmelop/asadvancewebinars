@@ -1,0 +1,19 @@
+{
+	"name": "05_CREATED_ORS_FILEPATH_BY_PARTITION",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 02"
+		},
+		"content": {
+			"query": "CREATE VIEW curated.sales_opt AS\nSELECT top 100\n        *,\n        cast(sales.filepath(1) as int) as [Year],\n        cast(sales.filepath(2) as int) as [Month]\n    FROM\n        OPENROWSET(\n            BULK 'https://dlsasa.dfs.core.windows.net/raw/curated/Sales_opt/Year=*/Month=*/*.parquet',\n            FORMAT='PARQUET'\n        ) \n    WITH (\n        [SaleId] int,\n        [OldTicket] nvarchar(20),\n        [InvoiceCode] nvarchar(20),\n        [Date] date,\n        [StoreCode] nvarchar(10),\n        [CustomerId] int,\n        [SaleLineId] bigint,\n        [InvoiceLine] int,\n        [ProductCode] nvarchar(10),\n        [Quantity] numeric(18,4),\n        [SalePrice] numeric(18,4),\n        [PurchasePrice] numeric(18,4),\n        [UnitMeasure] nvarchar(1)\n    ) AS [sales] ",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "ODStaging",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "03_CHECK_PBI_EndUsers_RLS_Access",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 04"
+		},
+		"content": {
+			"query": "/* \nDEMO SECURITY\nCHECK POWER BI EXECUTING CALLS TO DW\n*/\n\nSELECT * FROM sys.dm_pdw_exec_requests\nORDER BY request_id DESC\nGO\n-- easy way for detect Power BI requests... 'label...'\n    \nSELECT *\nFROM sys.dm_pdw_exec_sessions \nWHERE session_id = '' -- select from previous session",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

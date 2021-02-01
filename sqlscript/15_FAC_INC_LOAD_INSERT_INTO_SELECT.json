@@ -1,0 +1,19 @@
+{
+	"name": "15_FAC_INC_LOAD_INSERT_INTO_SELECT",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "-- INSERT INTO...SELECT to Bulk Import data with minimal logging and parallelism -- (20.754.700 rows affected) -- 00:00:44:000\n\nINSERT INTO [fact].[Sales_Hash_Merge]\nSELECT [DateKey]\n      ,[sk_Store]\n      ,[sk_Product]\n      ,[sk_Customer]\n      ,[SaleLineId]\n      ,[SaleId]\n\t  ,[bkSaleId]\n      ,[InvoiceLine]\n      ,[OldTicket]\n      ,[ProductCode]\n      ,[Quantity]\n      ,[SalePrice]\n      ,[PurchasePrice]\n      ,[UnitMeasure]\n      ,[InvoiceCode]\n      ,[Date]\n      ,[StoreCode]\n      ,[CustomerId]\n  FROM [etl].[Fact_Sales_Merge_INC]\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

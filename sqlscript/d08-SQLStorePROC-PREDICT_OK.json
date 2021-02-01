@@ -1,0 +1,19 @@
+{
+	"name": "d08-SQLStorePROC-PREDICT_OK",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"content": {
+			"query": "\n-- syn-asa-saleconsolidated-20210201091244-Best:1\n-- DROP PROCEDURE [wwi].[ForecastProductQuantity2]\nCREATE PROC [wwi].[ForecastProductQuantity2] AS\nBEGIN\n\nSELECT\n    CAST([ProductId] AS [bigint]) AS [ProductId],\n    CAST([TransactionDate] AS [bigint]) AS [TransactionDate],\n    CAST([Hour] AS [bigint]) AS [Hour]\nINTO #ProductQuantityForecast2\nFROM [wwi].[ProductQuantityForecast2]\nWHERE TotalQuantity = 0;\n\nSELECT\n    ProductId\n    ,TransactionDate\n    ,Hour\n    ,CAST(variable_out1 as INT) as TotalQuantity\nINTO\n    #Pred\nFROM PREDICT (MODEL = (SELECT [model] FROM wwi.Model_PQ2 WHERE [ID] = 'syn-asa-saleconsolidated-20210201091244-Best:1'),\n            DATA = #ProductQuantityForecast2,\n            RUNTIME = ONNX) WITH ([variable_out1] [real])\n\nMERGE [wwi].[ProductQuantityForecast2] AS target  \n    USING (select * from #Pred) AS source (ProductId, TransactionDate, Hour, TotalQuantity)  \nON (target.ProductId = source.ProductId and target.TransactionDate = source.TransactionDate and target.Hour = source.Hour)  \n    WHEN MATCHED THEN\n        UPDATE SET target.TotalQuantity = source.TotalQuantity;\nEND\nGO\n\n/* ready to perform the forecast on the TotalQuantity column */ \nEXEC\n    wwi.ForecastProductQuantity2\n\nSELECT  \n    *\nFROM\n    wwi.ProductQuantityForecast2\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

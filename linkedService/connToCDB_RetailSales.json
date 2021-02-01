@@ -1,0 +1,16 @@
+{
+	"name": "connToCDB_RetailSales",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "CosmosDb",
+		"typeProperties": {
+			"connectionString": "AccountEndpoint=https://cdb-synapse02.documents.azure.com:443/;Database=RetailSalesDemoDB;",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTi1BU0FfODM3N2NiZGItNDQ5My00Y2Q4LTgwYjEtYTlkYWZmMjAwZTkyIg0KfQ=="
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

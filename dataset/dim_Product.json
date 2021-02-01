@@ -1,0 +1,98 @@
+{
+	"name": "dim_Product",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseAnalytics1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "sk_Product",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ProductCode",
+				"type": "varchar"
+			},
+			{
+				"name": "ProductName",
+				"type": "varchar"
+			},
+			{
+				"name": "Price",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			},
+			{
+				"name": "LastPurchasePrice",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			},
+			{
+				"name": "CategoryCode",
+				"type": "varchar"
+			},
+			{
+				"name": "Category",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Line",
+				"type": "nvarchar"
+			},
+			{
+				"name": "PurchaseUnit",
+				"type": "varchar"
+			},
+			{
+				"name": "SaleUnit",
+				"type": "varchar"
+			},
+			{
+				"name": "RegularSupplier",
+				"type": "varchar"
+			},
+			{
+				"name": "Weight",
+				"type": "decimal",
+				"precision": 38,
+				"scale": 20
+			},
+			{
+				"name": "Locked",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PostingGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "VAT_Bus_PostingGr_Price",
+				"type": "varchar"
+			},
+			{
+				"name": "VAT_Prod_PostingGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "Start_Date",
+				"type": "date"
+			},
+			{
+				"name": "End_Date",
+				"type": "date"
+			}
+		],
+		"typeProperties": {
+			"schema": "dim",
+			"table": "Product"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

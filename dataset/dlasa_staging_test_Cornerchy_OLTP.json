@@ -1,0 +1,25 @@
+{
+	"name": "dlasa_staging_test_Cornerchy_OLTP",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "dllasa_staging",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": {
+					"value": "@concat(item().tablename, '/', formatDateTime(utcnow(),'yyyyMMdd'), '/', item().tablename, '.parquet')",
+					"type": "Expression"
+				},
+				"folderPath": "test_Cornerchy_OLTP",
+				"fileSystem": "staging"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": []
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

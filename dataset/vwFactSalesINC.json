@@ -1,0 +1,81 @@
+{
+	"name": "vwFactSalesINC",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseAnalytics1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "SaleLineId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "SaleId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "InvoiceLine",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OldTicket",
+				"type": "nvarchar"
+			},
+			{
+				"name": "InvoiceCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Quantity",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 6
+			},
+			{
+				"name": "SalePrice",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "PurchasePrice",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "UnitMeasure",
+				"type": "nvarchar"
+			},
+			{
+				"name": "Date",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "StoreCode",
+				"type": "nvarchar"
+			},
+			{
+				"name": "CustomerId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ProductCode",
+				"type": "nvarchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "etl",
+			"table": "Sales_INC"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

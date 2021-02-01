@@ -1,0 +1,131 @@
+{
+	"name": "d5-Hyperspace in csharp",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "csharp"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/ad80bb35-cd7e-414e-84dc-af93d138fef0/resourceGroups/rg-demosynapse/providers/Microsoft.Synapse/workspaces/syn-asa/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://syn-asa.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"%%csharp\n",
+					"\n",
+					"// Create an instance of Hyperspace\n",
+					"using Microsoft.Spark.Extensions.Hyperspace;\n",
+					"\n",
+					"Hyperspace hyperspace = new Hyperspace(spark);"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## To create a Hyperspace index, you need to provide two pieces of information:\n",
+					"\n",
+					"1. A Spark DataFrame that references the data to be indexed.\n",
+					"2. An index configuration object, IndexConfig, which specifies the index name and the indexed and included columns of the index.\n",
+					"\n",
+					"An index column is a column that appears in your filters or join conditions. An included column is a column that appears in your select/project.\n",
+					"```SQL\n",
+					"SELECT X FROM T WHERE Y = 2\n",
+					"```\n",
+					"Y can be an index column, and X can be an included column.\n",
+					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%csharp\n",
+					"\n",
+					"using Microsoft.Spark.Extensions.Hyperspace.Index;\n",
+					"\n",
+					"var empIndexConfig = new IndexConfig(\"empIndex\", new string[] {\"deptId\"}, new string[] {\"empName\"});\n",
+					"var deptIndexConfig1 = new IndexConfig(\"deptIndex1\", new string[] {\"deptId\"}, new string[] {\"deptName\"});\n",
+					"var deptIndexConfig2 = new IndexConfig(\"deptIndex2\", new string[] {\"location\"}, new string[] {\"deptName\"});"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%csharp\n",
+					"// Create indexes from configurations\n",
+					"hyperspace.CreateIndex(empDF, empIndexConfig);\n",
+					"hyperspace.CreateIndex(deptDF, deptIndexConfig1);\n",
+					"hyperspace.CreateIndex(deptDF, deptIndexConfig2);"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%csharp\n",
+					"hyperspace.Indexes().Show();"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%csharp\n",
+					"\n",
+					"hyperspace.DeleteIndex(\"deptIndex2\");\n",
+					"\n",
+					"hyperspace.Indexes().Show();"
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%csharp\n",
+					"// Enable Hyperspace\n",
+					"spark.EnableHyperspace();\n",
+					"\n",
+					"// Disable Hyperspace\n",
+					"spark.DisableHyperspace();"
+				],
+				"execution_count": null
+			}
+		]
+	}
+}

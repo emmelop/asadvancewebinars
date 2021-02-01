@@ -1,0 +1,19 @@
+{
+	"name": "03_CHANGE_TYPE_2_DIMS",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "\ntruncate table staging.Product\n\nINSERT INTO [staging].[Product]\n           ([ProductCode]\n           ,[ProductName]\n           ,[Price]\n           ,[LastPurchasePrice]\n           ,[CategoryCode]\n           ,[PurchaseUnit]\n           ,[SaleUnit]\n           ,[RegularSupplier]\n           ,[Weight]\n           ,[Locked]\n           ,[LastModifiedDate]\n           ,[PostingGroup]\n           ,[VAT_Bus_PostingGr_Price]\n           ,[VAT_Prod_PostingGroup])\n     VALUES\n           ('06000128'\n           ,'ESPONJA KIWI EXPRES DOSIFICADO'\n           ,25.46720000000000000000\n           ,16.65830000000000000000\n           ,'07'\n           ,'U'\n           ,'U'\n           ,''\n           ,0.00000000000000000000\n           ,0\n           ,'2021-01-01'\n           ,'STORE'\n           ,''\n           ,'IVA21')\nGO\n\nSELECT count(1) FROM [dim].[Product]\n\nEXEC [dim].[load_Product]\n\nSELECT count(1) FROM [dim].[Product]\n\nSELECT TOP (1000) * FROM [dim].[Product] where ProductCode = '06000128'\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "CREATE_WORKLOAD_01",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 02 - WorkLoads"
+		},
+		"content": {
+			"query": "-- 01 CREATE USER\nUSE MASTER\nIF NOT EXISTS (SELECT * FROM sys.sql_logins WHERE name = 'SynapseEtl')\nBEGIN\n\tCREATE LOGIN [SynapseEtl] WITH PASSWORD='synapse.2021'\nEND\n;\n\n-- 02 CREATE WORKLOAD GROUP (USE SQLDW)\n-- DW300c - default REQUEST_MIN_RESOURCE_GRANT_PERCENT = 8%, si estamos por debajo de DW300, con 12 solicitudes concurrentes.\n-- \nIF NOT EXISTS (SELECT * FROM sys.database_principals WHERE name = 'SynapseEtl')\nBEGIN\n\tCREATE USER [SynapseEtl] FOR LOGIN [SynapseEtl]\nEND\n;\n\nexec sp_addrolemember 'db_owner', [SynapseEtl]\n\n-- Workload 1. \"DataLoads\"\nCREATE WORKLOAD GROUP DataLoads\nWITH ( MIN_PERCENTAGE_RESOURCE = 20\t\n      ,CAP_PERCENTAGE_RESOURCE = 80\n      ,REQUEST_MIN_RESOURCE_GRANT_PERCENT = 2 -- si estamos por debajo se ajusta al mínimo del tier. Ejemplo en DW100c se ajustará a 25%, con 4 solicitudes concurrentes.\n\t  ,IMPORTANCE = HIGH)\n;\n/*\n-- best practice:\n-- Workload 1. \"DataLoads\"\nCREATE WORKLOAD GROUP DataLoads\nWITH ( MIN_PERCENTAGE_RESOURCE = 100\t\n      ,CAP_PERCENTAGE_RESOURCE = 100\n      ,REQUEST_MIN_RESOURCE_GRANT_PERCENT = 100 --max. concurrency:1\n\t  ,IMPORTANCE = HIGH)\n;\nCREATE WORKLOAD CLASSIFIER [wgcELTLogin]\n   WITH (\n\t     WORKLOAD_GROUP = 'DataLoads'\n       ,MEMBERNAME = 'loader'\n   );\n*/\n-- Workload 2. \"QueryLoads\"\nCREATE WORKLOAD GROUP QueryLoads\nWITH ( MIN_PERCENTAGE_RESOURCE = 20 \n      ,CAP_PERCENTAGE_RESOURCE = 20 -- 100\n      ,REQUEST_MIN_RESOURCE_GRANT_PERCENT = 10\n\t  ,IMPORTANCE = LOW)\n;\n\n-- Workload 3. \"ReportsLoads\"\nCREATE WORKLOAD GROUP ReportsLoads\nWITH ( MIN_PERCENTAGE_RESOURCE = 20 \n      ,CAP_PERCENTAGE_RESOURCE = 80\n      ,REQUEST_MIN_RESOURCE_GRANT_PERCENT = 10\n\t  ,IMPORTANCE = HIGH)\n;\n\nCREATE WORKLOAD CLASSIFIER [wgcSynapseEtl]\nWITH (WORKLOAD_GROUP = 'DataLoads'\n      ,MEMBERNAME = 'SynapseEtl'\n\t  ,IMPORTANCE = HIGH)\n;\n\nCREATE WORKLOAD CLASSIFIER [wgcbianalyst]\nWITH (WORKLOAD_GROUP = 'QueryLoads'\n      ,MEMBERNAME = 'bianalyst'\n\t  ,IMPORTANCE = LOW)\n;\n\n-- REVIEW\nSELECT * FROM\nsys.workload_management_workload_groups\n\nSELECT * FROM\nsys.workload_management_workload_classifiers\n\nSELECT * FROM\nsys.dm_workload_management_workload_groups_stats\n\n-- DROPS (USE MASTER)\nDROP LOGIN SynapseEtl -- (USE MASTER)\nDROP USER SynapseEtl -- (USE SQLDW)\n\n-- USE SQLDW\nDROP WORKLOAD GROUP DataLoads\nDROP WORKLOAD GROUP QueryLoads\nDROP WORKLOAD GROUP ReportsLoads\nDROP WORKLOAD CLASSIFIER wgcSynapseEtl\nDROP WORKLOAD CLASSIFIER [wgcbianalyst]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "00_CREATE_DIMS",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "CREATE TABLE [dim].[Customer]\n( \n\t[sk_Customer] [int] IDENTITY(1,1) NOT NULL,\n\t[CustomerID] [int]  NULL,\n\t[CustomerCode] [varchar](255)  NULL,\n\t[Name] [varchar](50)  NULL,\n\t[Lastname] [varchar](50)  NULL,\n\t[Birthday] [date]  NULL,\n\t[MaritalStatus] [varchar](1)  NULL,\n\t[Gender] [varchar](50)  NULL,\n\t[Email] [varchar](255)  NULL,\n\t[AnnualIncome] [numeric](19,4)  NULL,\n\t[TotalChildren] [int]  NULL,\n\t[ChildrenAtHome] [int]  NULL,\n\t[PostalCode] [varchar](50)  NULL,\n\t[Country] [varchar](255)  NULL,\n\t[Occupation] [nvarchar](30)  NULL,\n\t[AcademicLevel] [varchar](255)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\n\nCREATE TABLE [dim].[Date]\n( \n\t[sk_Date] [int] IDENTITY(1,1) NOT NULL,\n\t[DateKey] [int]  NULL,\n\t[Date] [date]  NULL,\n\t[DateTime] [datetime2](7)  NULL,\n\t[YearMonth] [int]  NULL,\n\t[YearMonthDescription] [varchar](100)  NULL,\n\t[NYear] [int]  NULL,\n\t[NMonth] [int]  NULL,\n\t[NWeek] [int]  NULL,\n\t[NWeekDay] [int]  NULL,\n\t[NMonthDay] [int]  NULL,\n\t[NYearDay] [int]  NULL,\n\t[NQuarter] [int]  NULL,\n\t[NSemester] [int]  NULL,\n\t[DayName] [varchar](100)  NULL,\n\t[SortDayName] [varchar](100)  NULL,\n\t[MonthName] [varchar](100)  NULL,\n\t[SortMonthName] [varchar](100)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\n\nCREATE TABLE [dim].[Product]\n( \n\t[sk_Product] [int] IDENTITY(1,1) NOT NULL,\n\t[ProductCode] [varchar](32)  NULL,\n\t[ProductName] [varchar](33)  NULL,\n\t[Price] [numeric](38,20)  NULL,\n\t[LastPurchasePrice] [numeric](38,20)  NULL,\n\t[CategoryCode] [varchar](30)  NULL,\n\t[Category] [nvarchar](30)  NULL,\n\t[Line] [nvarchar](30)  NULL,\n\t[PurchaseUnit] [varchar](30)  NULL,\n\t[SaleUnit] [varchar](30)  NULL,\n\t[RegularSupplier] [varchar](30)  NULL,\n\t[Weight] [numeric](38,20)  NULL,\n\t[Locked] [int]  NULL,\n\t[PostingGroup] [varchar](8000)  NULL,\n\t[VAT_Bus_PostingGr_Price] [varchar](30)  NULL,\n\t[VAT_Prod_PostingGroup] [varchar](30)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)\n\nCREATE TABLE [dim].[Store]\n( \n\t[sk_Store] [int] IDENTITY(1,1) NOT NULL,\n\t[StoreCode] [varchar](255)  NULL,\n\t[StoreName] [varchar](255)  NULL,\n\t[Latitude] [numeric](28,5)  NULL,\n\t[Longitude] [numeric](28,5)  NULL,\n\t[sq_ft_surface] [int]  NULL,\n\t[SizeGroup] [varchar](255)  NULL,\n\t[Employees] [int]  NULL,\n\t[RentBase] [numeric](19,4)  NULL,\n\t[RentPriceApplyReferenceIndex] [bit]  NULL,\n\t[RentYearContract] [int]  NULL,\n\t[PostalCode] [varchar](255)  NULL,\n\t[Country] [varchar](255)  NULL,\n\t[IsDistributedData] [bit]  NULL,\n\t[IsActive] [bit]  NULL,\n\t[StoreId] [int]  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "12_CREATE_AND_LOAD_INC",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "--SELECT MAX(SALEID) SALEID, MAX(SALELINEID) SALELINEID\n--FROM SALES.SALES\n\n---- 14.341.249\t174.616.293\n--WITH CTE AS\n--(\n--SELECT SALEID, SALELINEID\n--FROM SALES.SALES\n--WHERE SALELINEID < 5000000\n--)\n--SELECT COUNT(1), MAX(SALEID) SALEID, MAX(SALELINEID) SALELINEID\n--FROM C\n\n-- 20.750.880\n\n--SELECT COUNT(1) FROM [staging].[Sales_Header_hash] WHERE SALEID <= 1169185\n\n--SELECT MAX(SALELINEID) FROM [staging].[Sales_Lines_hash] WHERE SALEID <= 1169185\n\n-- drop table [staging].[Sales_Header_hash_INC] \n-- drop TABLE [staging].[Sales_Lines_hash_INC]\n\nDECLARE @SALEID INT = 14341249\nDECLARE @SALELINEID INT = 174616293\nCREATE TABLE [staging].[Sales_Header_hash_INC] -- Total execution time: 00:00:02.414 # 1.101.015\nWITH\n\t(\n\tDISTRIBUTION = HASH(SaleId),\n\tHEAP\n\t)\nAS \n\tSELECT\n\t\t @SALEID + [SaleId] AS SaleId,\n\t\t [OldTicket],\n\t\t [InvoiceCode],\n\t\t [Date],\n\t\t [StoreCode],\n\t\t [CustomerId],\n\t\t [LoadDate],\n\t\t [TriggerDate]\n\tFROM [staging].[Sales_Header_hash]\n\tWHERE SALEID <= 1169185\n\nDECLARE @SALEID INT = 14341249\nDECLARE @SALELINEID INT = 174616293\nCREATE TABLE [staging].[Sales_Lines_hash_INC]  -- Total execution time: 00:00:24.846 # 20.750.880\nWITH\n\t(\n\tDISTRIBUTION = HASH(SaleId),\n\tHEAP\n\t)\nAS \n\tselect\n\t\t @SALELINEID + [SaleLineId] AS SaleLineId,\n\t\t @SALEID + [SaleId] AS SaleId,\n\t\t [InvoiceLine],\n\t\t [ProductCode],\n\t\t [Quantity],\n\t\t [SalePrice],\n\t\t [PurchasePrice],\n\t\t [UnitMeasure],\n\t\t [LoadDate],\n\t\t [TriggerDate]\n\tFROM [staging].[Sales_Lines_hash] \n\tWHERE SALEID <= 1169185\n\n-- select count(1) from staging.Sales_Header_hash_INC\n\n-- select count(1) from staging.Sales_Lines_hash_INC\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,137 @@
+{
+	"name": "06_CREATE_DATABASE_SPARK",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 02 Partitioning data into ADLSg2"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/ad80bb35-cd7e-414e-84dc-af93d138fef0/resourceGroups/rg-demosynapse/providers/Microsoft.Synapse/workspaces/syn-asa/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://syn-asa.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"# Sales_opt partition by Period Year and Month - only 2011, \n",
+					"import datetime\n",
+					"from pyspark.sql.functions import year, month, concat, lpad\n",
+					"from pyspark.sql import SparkSession\n",
+					"from datetime import date, timedelta\n",
+					"from pyspark.sql.types import IntegerType, DateType, StringType, StructType, StructField"
+				],
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"--drop table spark_database.sales_spark\n",
+					"--drop database spark_database"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"create database spark_database"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Sales_opt partition by Period Year and Month - only 2011, \n",
+					"import datetime\n",
+					"from pyspark.sql.functions import year, month, concat, lpad\n",
+					"from pyspark.sql import SparkSession\n",
+					"from datetime import date, timedelta\n",
+					"from pyspark.sql.types import IntegerType, DateType, StringType, StructType, StructField\n",
+					"\n",
+					"read_path = 'abfss://tempdata@dlsasa.dfs.core.windows.net/curated/Sales_opt/Year=2020/Month=01/part-00000-cc1a0b66-7de8-4835-98a8-dfaa2016e9f2.c000.snappy.parquet'\n",
+					"\n",
+					"df = spark.read.load(read_path, format='parquet')\n",
+					"\n",
+					"df.write.mode(\"overwrite\").saveAsTable(\"spark_database.sales_spark\")\n",
+					"\n",
+					""
+				],
+				"execution_count": 10
+			}
+		]
+	}
+}

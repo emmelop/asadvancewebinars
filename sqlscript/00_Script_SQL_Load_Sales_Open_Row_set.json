@@ -1,0 +1,19 @@
+{
+	"name": "00_Script_SQL_Load_Sales_Open_Row_set",
+	"properties": {
+		"folder": {
+			"name": "Setup"
+		},
+		"content": {
+			"query": "--DROP EXTERNAL TABLE curated.sales_ors\nALTER VIEW etl.sales_ors as\nWITH salesline \nAS\n(\n    SELECT [SaleLineId],\n        [SaleId],\n        [InvoiceLine],\n        [ProductCode],\n        [Quantity],\n        [SalePrice],\n        [PurchasePrice],\n        [UnitMeasure]\n    FROM\n    OPENROWSET(\n        BULK 'https://dlsasa.dfs.core.windows.net/raw/raw/SalesLines/20201211/SalesLines.parquet',\n        FORMAT='PARQUET'\n    )\n    WITH (\n        [SaleLineId] bigint,\n        [SaleId] int,\n        [InvoiceLine] int,\n        [ProductCode] nvarchar(10),\n        [Quantity] numeric(18,4),\n        [SalePrice] numeric(18,4),\n        [PurchasePrice] numeric(18,4),\n        [UnitMeasure] nvarchar(1)\n    ) AS [salesline]\n)\n,salesheader\nAS\n(\n    SELECT [SaleId],\n\t[OldTicket],\n\t[InvoiceCode],\n\t[Date],\n\t[StoreCode],\n\t[CustomerId] \n    FROM\n    OPENROWSET(\n        BULK 'https://dlsasa.dfs.core.windows.net/raw/raw/SalesHeader/20201211/SalesHeader.parquet',\n        FORMAT='PARQUET'\n    ) \n    WITH (\n        [SaleId] int,\n        [OldTicket] nvarchar(20),\n        [InvoiceCode] nvarchar(20),\n        [Date] datetime2(7),\n        [StoreCode] nvarchar(10),\n        [CustomerId] int\n    ) AS [salesheader]\n)\nSELECT \n    SaleLineId\n    ,salesline.[SaleId]\n    ,[InvoiceLine]\n    ,[OldTicket]\n    ,[InvoiceCode]\n    ,[Quantity]\n    ,[SalePrice]\n    ,[PurchasePrice]\n    ,[UnitMeasure]\n    ,[Date]\n    ,[StoreCode]\n    ,[CustomerId]\n    ,[ProductCode]\nFROM [salesline]\nINNER JOIN [salesheader] ON salesheader.SaleId = salesline.SaleId\nGO\n\nCREATE EXTERNAL TABLE curated.sales_ors\nWITH (\n\tLOCATION = '/curated/sales_orc/',\n\tDATA_SOURCE = [raw_dlsasa_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n) \nAS\nSELECT \n    SaleLineId\n    ,[SaleId]\n    ,[InvoiceLine]\n    ,[OldTicket]\n    ,[InvoiceCode]\n    ,[Quantity]\n    ,[SalePrice]\n    ,[PurchasePrice]\n    ,[UnitMeasure]\n    ,[Date]\n    ,[StoreCode]\n    ,[CustomerId]\n    ,[ProductCode]\nFROM etl.sales_ors\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "ODstaging",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

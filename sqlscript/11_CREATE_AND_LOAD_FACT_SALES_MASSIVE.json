@@ -1,0 +1,19 @@
+{
+	"name": "11_CREATE_AND_LOAD_FACT_SALES_MASSIVE",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "-- Improving with the distribution method\n\nCREATE TABLE [staging].[Sales_Header_hash] -- Total execution time: 00:00:57.455\nWITH\n\t(\n\tDISTRIBUTION = HASH(SaleId),\n\tHEAP\n\t)\nAS \nselect [SaleId],\n\t [OldTicket],\n\t [InvoiceCode],\n\t [Date],\n\t [StoreCode],\n\t [CustomerId],\n\t [LoadDate],\n\t [TriggerDate]\nfrom [staging].[Sales_Header]\n\nCREATE TABLE [staging].[Sales_Lines_hash] -- Total execution time: 00:10:05.477\nWITH\n\t(\n\tDISTRIBUTION = HASH(SaleId),\n\tHEAP\n\t)\nAS \nselect [SaleLineId],\n\t [SaleId],\n\t [InvoiceLine],\n\t [ProductCode],\n\t [Quantity],\n\t [SalePrice],\n\t [PurchasePrice],\n\t [UnitMeasure],\n\t [LoadDate],\n\t [TriggerDate]\n from [staging].[Sales_Lines]\n\n-- Improving with indexes (for search field)-- Total execution time: 00:00:15.973\n-- one index for every search field to improve perf.\nCREATE INDEX CI_date ON [common].[date] ([date]);\nCREATE INDEX CI_CustomerId ON [dim].[Customer] (CustomerId);\nCREATE INDEX CI_ProductCode ON [dim].[Product] (ProductCode);\nCREATE INDEX CI_StoreCode ON [dim].[Store] (StoreCode);\n\n\n-- Loading massive fact table -- Total execution time (DW300): 00:25:43.000\n--DROP TABLE fact.Sales\n\n-- flatten headers and sales line\n-- and transforms to bring surrogate keys\nCREATE TABLE fact.Sales\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n\t)\nAS \nSELECT [date].[DateKey] \n\t  ,store.[sk_Store]\n\t  ,product.[sk_Product]\n\t  ,customer.[sk_Customer]\n\t  ,lines.[SaleLineId]\n      ,lines.[SaleId]\n      ,lines.[InvoiceLine]\n\t  ,header.[OldTicket]\n      ,lines.[ProductCode]\n      ,lines.[Quantity]\n      ,lines.[SalePrice]\n      ,lines.[PurchasePrice]\n      ,lines.[UnitMeasure]\n      ,header.[InvoiceCode]\n      ,CAST(header.[Date] AS DATE) [Date]\n      ,header.[StoreCode]\n      ,header.[CustomerId]\n  FROM [staging].[Sales_Lines] lines\n  inner join [staging].[Sales_Header] header on header.SaleId = lines.SaleId\n  inner join [common].[date] [date] on [date].[Date] = CAST(header.[Date] AS DATE)\n  inner join [dim].[Customer] customer on customer.[CustomerID] = header.[CustomerId]\n  inner join [dim].[Product] product on product.[ProductCode] = lines.[ProductCode]\n  inner join [dim].[Store] store on store.[StoreCode] = header.[StoreCode]\n\n  SELECT COUNT(1) FROM FACT.SALES\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

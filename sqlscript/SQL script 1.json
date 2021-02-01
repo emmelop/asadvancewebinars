@@ -1,0 +1,16 @@
+{
+	"name": "SQL script 1",
+	"properties": {
+		"content": {
+			"query": "SELECT TOP (100) [ProductId]\n,[TransactionDate]\n,[Hour]\n,[TotalQuantity]\n FROM [wwi].[ProductQuantityForecast]\n\n/*\n-- MLOPEZ TO-DO attach model to the table after repeat demo-lab camp\n -- Retrieve the latest hex encoded ONNX model from the table\nDECLARE @model varbinary(max) = \n  (\n    SELECT Model \n    FROM [wwi].[ProductQuantityForecast] \n    WHERE Id = (SELECT Top(1) max(ID) FROM [wwi].[ProductQuantityForecast]));\n\n-- Run a prediction query\nSELECT d.*, p.*\nFROM \n    PREDICT(MODEL = @model, DATA = [wwi].[ProductQuantityForecast] AS d, RUNTIME = ONNX )\n    WITH (hour real) AS p;\n*/",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

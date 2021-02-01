@@ -1,0 +1,19 @@
+{
+	"name": "02_CREATE_ETL_VIEWS_DIMS",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "CREATE SCHEMA etl\n\n-- PRODUCT\nCREATE VIEW etl.product\nAS\nSELECT [ProductCode]\n\t, [ProductName]\n\t, [Price]\n\t, [LastPurchasePrice]\n\t, prod.[CategoryCode]\n\t, cat.Category\n\t, line.Line\n\t, [PurchaseUnit]\n\t, [SaleUnit]\n\t, [RegularSupplier]\n\t, [Weight]\n\t, [Locked]\n\t, [PostingGroup]\n\t, [VAT_Bus_PostingGr_Price]\n\t, [VAT_Prod_PostingGroup]\nFROM staging.Product prod\nLEFT JOIN staging.Categories cat ON cat.CategoryCode = prod.[CategoryCode]\nLEFT JOIN staging.Line line ON cat.line = line.codigo\n\n-- CUSTOMER\nCREATE VIEW etl.customer\nAS\nSELECT [CustomerID]\n\t, [CustomerCode]\n\t, [Name]\n\t, [Lastname]\n\t, [Birthday]\n\t, [MaritalStatus]\n\t, [Gender]\n\t, [Email]\n\t, [AnnualIncome]\n\t, [TotalChildren]\n\t, [ChildrenAtHome]\n\t, [PostalCode]\n\t, country.CountryName AS [Country]\n\t, occ.Occupation\n\t, acc.[AcademicLevel]\nFROM staging.Customer cust\nLEFT JOIN staging.Countries country ON country.CountryCode = cust.Country\nLEFT JOIN staging.Occupation occ ON occ.OccupationId = cust.[OccupationId]\nLEFT JOIN staging.AcademicLevel acc ON acc.AcademicLevelId = cust.[AcademicLevelId]\n\n-- STORE\nCREATE VIEW etl.store\nAS\nSELECT [StoreCode]\n\t, [StoreName]\n\t, country.[Latitude]\n\t, country.[Longitude]\n\t, [sq_ft_surface]\n\t, [SizeGroup]\n\t, [Employees]\n\t, [RentBase]\n\t, [RentPriceApplyReferenceIndex]\n\t, [RentYearContract]\n\t, [PostalCode]\n\t, country.CountryName AS [Country]\n\t, [IsDistributedData]\n\t, [IsActive]\n\t, [StoreId]\nFROM staging.Stores store\nLEFT JOIN staging.Countries country ON country.CountryCode = store.Country\n\n-- DATE\nCREATE VIEW etl.Date\nAS\nSELECT [DateKey]\n\t, [Date]\n\t, [DateTime]\n\t, [YearMonth]\n\t, [YearMonthDescription]\n\t, [NYear]\n\t, [NMonth]\n\t, [NWeek]\n\t, [NWeekDay]\n\t, [NMonthDay]\n\t, [NYearDay]\n\t, [NQuarter]\n\t, [NSemester]\n\t, [DayName]\n\t, [SortDayName]\n\t, [MonthName]\n\t, [SortMonthName]\nFROM staging.Date DATE\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

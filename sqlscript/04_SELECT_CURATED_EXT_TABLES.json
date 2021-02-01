@@ -1,0 +1,19 @@
+{
+	"name": "04_SELECT_CURATED_EXT_TABLES",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 02"
+		},
+		"content": {
+			"query": " --> Total count dlsasa \n\n    --> Standar View 2:10m (3.16 GB processed) 868.481.140 Mill rows\n    --> TABLE_EXT ~3s (2 Mb)\n    SELECT count(1) FROM curated.sales\n\n/*\nMLopez execution: \n868481140\n5:37:47 PM Started executing query at Line 5\n(Statement ID: {5E7412D7-B1E4-43F0-A31F-95DC37009BE7} | Query hash: 0x295CF356596E0D73 | Distributed request ID: {A4CC24EB-2094-4B06-BD23-22F28B6B787F}. \nTotal size of data scanned is 5 megabytes, total size of data moved is 1 megabytes, total size of data written is 0 megabytes. )\nTotal execution time: 00:00:05.537\n*/\n\n--> 2019 count\n    --> Standaer View 34s 2019 count (3.29GB) 131.489.485\n    --> TABLE_EXT 1:14m (1GB MiB)\n    SELECT count(1) FROM curated.sales where year([Date]) = 2019\n\n/*\nMLopez execution: \n131489485\n5:45:27 PM Started executing query at Line 19\n(Statement ID: {1F8D1F9D-A421-42A7-8E5D-04291C0080C8} | Query hash: 0x106C72BCC8DA0984 | Distributed request ID: {A831919C-6DE6-4F89-B68A-BC8FB88C1694}. \nTotal size of data scanned is 994 megabytes, total size of data moved is 1 megabytes, total size of data written is 0 megabytes. )\nTotal execution time: 00:01:23.315\n*/\n\n--> Group by ~54s \n    select year([Date]), count(1)\n    from curated.sales\n    group by year([Date])\n\n/*\nMLopez execution: \n2018,144800960\n2012,173991240\n2017,60449775\n2015,68003970\n2020,2493160\n2013,37053355\n2019,131489485\n2016,90205495\n2011,25691560\n2014,134302140\n5:48:05 PM Started executing query at Line 31\n(Statement ID: {5CBA8247-428D-47BE-885F-6CE625257278} | Query hash: 0x33342CAE35C1EEA6 | Distributed request ID: {CB3A8728-AAF9-4776-9920-1D4010FFCFFE}. \nTotal size of data scanned is 1907 megabytes, total size of data moved is 1 megabytes, total size of data written is 0 megabytes. )\nTotal execution time: 00:01:18.801\n*/\n\nselect count(1) from [curated].[sales_opt]\n\nselect count(1) from [curated].[sales_opt] where year(date) = 2019\n\nselect count(1) from [curated].[sales_opt] where [year] = 2019",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "ODStaging"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

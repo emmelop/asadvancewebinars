@@ -1,0 +1,78 @@
+{
+	"name": "Dataflow_LoadSalesIncr",
+	"properties": {
+		"type": "MappingDataFlow",
+		"typeProperties": {
+			"sources": [
+				{
+					"dataset": {
+						"referenceName": "vwFactSalesINC",
+						"type": "DatasetReference"
+					},
+					"name": "vwFactSales"
+				},
+				{
+					"dataset": {
+						"referenceName": "dim_Store",
+						"type": "DatasetReference"
+					},
+					"name": "Store"
+				},
+				{
+					"dataset": {
+						"referenceName": "dim_Product",
+						"type": "DatasetReference"
+					},
+					"name": "Product"
+				},
+				{
+					"dataset": {
+						"referenceName": "dim_Customer",
+						"type": "DatasetReference"
+					},
+					"name": "Customer"
+				},
+				{
+					"dataset": {
+						"referenceName": "dim_Date",
+						"type": "DatasetReference"
+					},
+					"name": "Date"
+				}
+			],
+			"sinks": [
+				{
+					"dataset": {
+						"referenceName": "fact_Sales",
+						"type": "DatasetReference"
+					},
+					"name": "factSales"
+				}
+			],
+			"transformations": [
+				{
+					"name": "LookupStore"
+				},
+				{
+					"name": "LookupProduct"
+				},
+				{
+					"name": "LookupCustomer"
+				},
+				{
+					"name": "LookupDate"
+				},
+				{
+					"name": "DerivedColDimSK"
+				},
+				{
+					"name": "SelectColumn"
+				},
+				{
+					"name": "AlterRowActivateUpsert"
+				}
+			],
+			"script": "source(output(\n\t\tSaleLineId as long,\n\t\tSaleId as integer,\n\t\tInvoiceLine as integer,\n\t\tOldTicket as string,\n\t\tInvoiceCode as string,\n\t\tQuantity as decimal(18,6),\n\t\tSalePrice as decimal(19,4),\n\t\tPurchasePrice as decimal(19,4),\n\t\tUnitMeasure as string,\n\t\tDate as date,\n\t\tStoreCode as string,\n\t\tCustomerId as integer,\n\t\tProductCode as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tformat: 'table',\n\tstaged: false) ~> vwFactSales\nsource(output(\n\t\tsk_Store as integer,\n\t\tStoreCode as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT sk_Store\\n\t,StoreCode\\nFROM dim.Store',\n\tformat: 'query',\n\tstaged: false) ~> Store\nsource(output(\n\t\tsk_Product as integer,\n\t\tProductCode as string\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT sk_Product\\n\t,ProductCode\\nFROM dim.Product',\n\tformat: 'query',\n\tstaged: false) ~> Product\nsource(output(\n\t\tsk_Customer as integer,\n\t\tCustomerID as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT sk_Customer\\n\t,CustomerID\\nFROM dim.Customer',\n\tformat: 'query',\n\tstaged: false) ~> Customer\nsource(output(\n\t\tDateKey as integer,\n\t\tDate as date\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tignoreNoFilesFound: false,\n\tisolationLevel: 'READ_UNCOMMITTED',\n\tquery: 'SELECT [DateKey]\\n\t,[Date]\\nFROM [common].[Date]',\n\tformat: 'query',\n\tstaged: false) ~> Date\nvwFactSales, Store lookup(vwFactSales@StoreCode == Store@StoreCode,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupStore\nLookupStore, Product lookup(vwFactSales@ProductCode == Product@ProductCode,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupProduct\nLookupProduct, Customer lookup(vwFactSales@CustomerId == Customer@CustomerID,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupCustomer\nLookupCustomer, Date lookup(vwFactSales@Date == Date@Date,\n\tmultiple: true,\n\tbroadcast: 'auto')~> LookupDate\nLookupDate derive(new_sk_Store = iif(isNull(sk_Store)==true(), -1, sk_Store),\n\t\tnew_sk_Product = iif(isNull(sk_Product)==true(), -1, sk_Product),\n\t\tnew_sk_Customer = iif(isNull(sk_Customer)==true(), -1, sk_Customer),\n\t\t{ new_sk_Date} = iif(isNull(DateKey)==true(), -1, DateKey)) ~> DerivedColDimSK\nDerivedColDimSK select(mapColumn(\n\t\tSaleLineId,\n\t\tSaleId,\n\t\tInvoiceLine,\n\t\tOldTicket,\n\t\tInvoiceCode,\n\t\tQuantity,\n\t\tSalePrice,\n\t\tPurchasePrice,\n\t\tUnitMeasure,\n\t\tDate = vwFactSales@Date,\n\t\tStoreCode = vwFactSales@StoreCode,\n\t\tCustomerId = vwFactSales@CustomerId,\n\t\tProductCode = vwFactSales@ProductCode,\n\t\tsk_Store,\n\t\tStoreCode = Store@StoreCode,\n\t\tsk_Product,\n\t\tProductCode = Product@ProductCode,\n\t\tsk_Customer,\n\t\tCustomerID = Customer@CustomerID,\n\t\tDateKey,\n\t\tDate = Date@Date,\n\t\tnew_sk_Store,\n\t\tnew_sk_Product,\n\t\tnew_sk_Customer,\n\t\t{ new_sk_Date}\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> SelectColumn\nSelectColumn alterRow(upsertIf(true())) ~> AlterRowActivateUpsert\nAlterRowActivateUpsert sink(input(\n\t\tDateKey as integer,\n\t\tsk_Store as integer,\n\t\tsk_Product as integer,\n\t\tsk_Customer as integer,\n\t\tSaleLineId as long,\n\t\tSaleId as integer,\n\t\tInvoiceLine as integer,\n\t\tOldTicket as string,\n\t\tProductCode as string,\n\t\tQuantity as decimal(18,6),\n\t\tSalePrice as decimal(19,4),\n\t\tPurchasePrice as decimal(19,4),\n\t\tUnitMeasure as string,\n\t\tInvoiceCode as string,\n\t\tDate as date,\n\t\tStoreCode as string,\n\t\tCustomerId as integer\n\t),\n\tallowSchemaDrift: true,\n\tvalidateSchema: false,\n\tdeletable:false,\n\tinsertable:false,\n\tupdateable:false,\n\tupsertable:true,\n\tkeys:['SaleLineId','SaleId'],\n\tformat: 'table',\n\tstaged: true,\n\tallowCopyCommand: true,\n\tmapColumn(\n\t\tDateKey = { new_sk_Date},\n\t\tsk_Store = new_sk_Store,\n\t\tsk_Product = new_sk_Product,\n\t\tsk_Customer = new_sk_Customer,\n\t\tSaleLineId,\n\t\tSaleId,\n\t\tInvoiceLine,\n\t\tOldTicket,\n\t\tProductCode,\n\t\tQuantity,\n\t\tSalePrice,\n\t\tPurchasePrice,\n\t\tUnitMeasure,\n\t\tInvoiceCode,\n\t\tDate,\n\t\tStoreCode,\n\t\tCustomerId\n\t),\n\tskipDuplicateMapInputs: true,\n\tskipDuplicateMapOutputs: true) ~> factSales"
+		}
+	}
+}

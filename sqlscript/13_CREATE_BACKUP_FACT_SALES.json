@@ -1,0 +1,19 @@
+{
+	"name": "13_CREATE_BACKUP_FACT_SALES",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "CREATE TABLE fact.Sales_Hash_Merge\nWITH\n\t(\n\tDISTRIBUTION = HASH([bkSaleId]),\n\tCLUSTERED COLUMNSTORE INDEX\n\t)\nAS \nSELECT [DateKey]\n      ,[sk_Store]\n      ,[sk_Product]\n      ,[sk_Customer]\n      ,[SaleLineId]\n      ,[SaleId]\n      ,[bkSaleId]\n      ,[InvoiceLine]\n      ,[OldTicket]\n      ,[ProductCode]\n      ,[Quantity]\n      ,[SalePrice]\n      ,[PurchasePrice]\n      ,[UnitMeasure]\n      ,[InvoiceCode]\n      ,[Date]\n      ,[StoreCode]\n      ,[CustomerId]\n  FROM [fact].[Sales_initial_backup]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

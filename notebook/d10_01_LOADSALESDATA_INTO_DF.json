@@ -1,0 +1,278 @@
+{
+	"name": "d10_01_LOADSALESDATA_INTO_DF",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 04_Linking and using external CosmosDB"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/ad80bb35-cd7e-414e-84dc-af93d138fef0/resourceGroups/rg-demosynapse/providers/Microsoft.Synapse/workspaces/syn-asa/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://syn-asa.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"_c0"
+							],
+							"values": [
+								"_c0"
+							],
+							"yLabel": "_c0",
+							"xLabel": "_c0",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"_c0\":{\"2\":1,\"5\":1,\"8\":1,\"9\":1,\"12\":1,\"14\":1,\"18\":1,\"21\":1,\"28\":1,\"storeId\":1}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"%%pyspark\n",
+					"blob_account_name = \"stsynapsewebinarsblob01\"\n",
+					"blob_container_name = \"rootanalytics2filesystem\"\n",
+					"from pyspark.sql import SparkSession\n",
+					"\n",
+					"sc = SparkSession.builder.getOrCreate()\n",
+					"token_library = sc._jvm.com.microsoft.azure.synapse.tokenlibrary.TokenLibrary\n",
+					"blob_sas_token = token_library.getConnectionString(\"connToBlobStorage01\")\n",
+					"\n",
+					"spark.conf.set(\n",
+					"    'fs.azure.sas.%s.%s.blob.core.windows.net' % (blob_container_name, blob_account_name),\n",
+					"    blob_sas_token)"
+				],
+				"attachments": null,
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"storeId"
+							],
+							"values": [
+								"storeId"
+							],
+							"yLabel": "storeId",
+							"xLabel": "storeId",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"storeId\":{\"2\":1,\"5\":1,\"8\":1,\"9\":1,\"12\":1,\"14\":1,\"18\":1,\"21\":1,\"28\":1,\"32\":1}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"dfStoreDemoGraphics = spark.read.load('wasbs://rootanalytics2filesystem@stsynapsewebinarsblob01.blob.core.windows.net/RetailData/StoreDemoGraphics.csv', format='csv', header=True, inferSchema='true'\n",
+					"## If header exists uncomment line below\n",
+					"## , header=True\n",
+					")\n",
+					"display(dfStoreDemoGraphics.limit(10))"
+				],
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"storeId"
+							],
+							"values": [
+								"storeId"
+							],
+							"yLabel": "storeId",
+							"xLabel": "storeId",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"storeId\":{\"2\":10}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"dfRetailSales = spark.read.load('wasbs://rootanalytics2filesystem@stsynapsewebinarsblob01.blob.core.windows.net/RetailData/RetailSales.csv', format='csv', header=True, inferSchema='true'\n",
+					"## If header exists uncomment line below\n",
+					"##, header=True\n",
+					")\n",
+					"display(dfRetailSales.limit(10))"
+				],
+				"execution_count": 11
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"id"
+							],
+							"values": [
+								"id"
+							],
+							"yLabel": "id",
+							"xLabel": "id",
+							"aggregation": "COUNT",
+							"aggByBackend": false
+						},
+						"aggData": "{\"id\":{\"5462df01-3d19-4846-84e4-c42681624957\":1,\"9152d629-a1e7-43e4-adb8-71cb2b29d341\":1,\"fc9e4fbb-1972-4f61-b6f0-15282c2d3283\":1}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"dfProducts = spark.read.load('wasbs://rootanalytics2filesystem@stsynapsewebinarsblob01.blob.core.windows.net/RetailData/Products.csv', format='csv', header=True, inferSchema='true'\n",
+					"## If header exists uncomment line below\n",
+					"##, header=True\n",
+					")\n",
+					"display(dfProducts.limit(10))"
+				],
+				"execution_count": 16
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%pyspark\n",
+					"dfStoreDemoGraphics.write\\\n",
+					"            .format(\"cosmos.oltp\")\\\n",
+					"            .option(\"spark.synapse.linkedService\", \"connToCDB_RetailSales\")\\\n",
+					"            .option(\"spark.cosmos.container\", \"StoreDemoGraphics\")\\\n",
+					"            .option(\"spark.cosmos.write.upsertEnabled\", \"true\")\\\n",
+					"            .mode('append')\\\n",
+					"            .save()"
+				],
+				"execution_count": 13
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%pyspark\n",
+					"dfRetailSales.write\\\n",
+					"            .format(\"cosmos.oltp\")\\\n",
+					"            .option(\"spark.synapse.linkedService\", \"connToCDB_RetailSales\")\\\n",
+					"            .option(\"spark.cosmos.container\", \"RetailSales\")\\\n",
+					"            .option(\"spark.cosmos.write.upsertEnabled\", \"true\")\\\n",
+					"            .mode('append')\\\n",
+					"            .save()"
+				],
+				"execution_count": 14
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"%%pyspark\n",
+					"dfProducts.write\\\n",
+					"            .format(\"cosmos.oltp\")\\\n",
+					"            .option(\"spark.synapse.linkedService\", \"connToCDB_RetailSales\")\\\n",
+					"            .option(\"spark.cosmos.container\", \"Products\")\\\n",
+					"            .option(\"spark.cosmos.write.upsertEnabled\", \"true\")\\\n",
+					"            .mode('append')\\\n",
+					"            .save()"
+				],
+				"execution_count": 18
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"\n",
+					"-- Create a Spark table over Cosmos DB analytical store\n",
+					"-- To select a preferred list of regions in a multi-region Cosmos DB account, add spark.cosmos.preferredRegions '<Region1>,<Region2>' in the config options\n",
+					"\n",
+					"create table StoreDemographics using cosmos.olap options (\n",
+					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
+					"    spark.cosmos.container 'StoreDemoGraphics'\n",
+					")\n",
+					"\n",
+					""
+				],
+				"execution_count": 1
+			}
+		]
+	}
+}

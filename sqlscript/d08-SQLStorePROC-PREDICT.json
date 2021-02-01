@@ -1,0 +1,19 @@
+{
+	"name": "d08-SQLStorePROC-PREDICT",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"content": {
+			"query": "\n-- syn-asa-saleconsolidated-20210201091244-Best:1\n\nCREATE PROC [wwi].[ForecastProductQuantity2] AS\nBEGIN\n\nSELECT\n    CAST([ProductId] AS [bigint]) AS [ProductId],\n    CAST([TransactionDate] AS [bigint]) AS [TransactionDate],\n    CAST([Hour] AS [bigint]) AS [Hour]\nINTO #ProductQuantityForecast\nFROM [wwi].[ProductQuantityForecast]\nWHERE TotalQuantity = 0;\n\nSELECT\n    ProductId\n    ,TransactionDate\n    ,Hour\n    ,CAST(variable_out1 as INT) as TotalQuantity\nINTO\n    #Pred\nFROM PREDICT \n    (MODEL = (\n        SELECT [model] FROM wwi.Model WHERE [ID] = 'syn-asa-saleconsolidated-20210201091244-Best:1'),\n            DATA = #ProductQuantityForecast,\n            RUNTIME = ONNX) WITH ([variable_out1] [real])\n\nMERGE [wwi].[ProductQuantityForecast] AS target  \n    USING (select * from #Pred) AS source (ProductId, TransactionDate, Hour, TotalQuantity)  \nON (target.ProductId = source.ProductId and target.TransactionDate = source.TransactionDate and target.Hour = source.Hour)  \n    WHEN MATCHED THEN\n        UPDATE SET target.TotalQuantity = source.TotalQuantity;\nEND\nGO\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

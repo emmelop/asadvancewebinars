@@ -1,0 +1,19 @@
+{
+	"name": "d01_01_SELECTCOUNT",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 01"
+		},
+		"content": {
+			"query": "\n/* our data model has 868,481,140 sales lines: */\n\nselect count(1) from [sales].[sales];\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

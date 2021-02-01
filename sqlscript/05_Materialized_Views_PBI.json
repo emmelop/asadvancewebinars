@@ -1,0 +1,19 @@
+{
+	"name": "05_Materialized_Views_PBI",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 03"
+		},
+		"content": {
+			"query": "/* \n\n*/\n\nDBCC DROPCLEANBUFFERS;\nDBCC FREEPROCCACHE;\n\nWITH agg_sales \nAS ( \n\tSELECT [Date] \n\t, [StoreCode] \n\t, [CustomerId] \n\t, count(*) as numReg \n\tFROM [sales].[sales] \n\tGROUP BY [Date] \n\t, [StoreCode] \n\t, [CustomerId] \n ) \nSELECT [date].NYear\n\t, [date].MonthName\n\t, sum(numReg) sales\nFROM agg_sales sales\ninner join [common].[date] as [date] on sales.date = [date].[date]\ngroup by [date].NYear, [date].NMonth, [date].MonthName\norder by [date].NYear, [date].NMonth \ngo\n\n/*\nCreate materalized view using RR, \ntte to create: 36s\ntte main-query using this view: 6s\n*/\n-- DROP VIEW sales.sales_mat_rr \nCREATE MATERIALIZED VIEW sales.sales_mat_rr\nWITH (DISTRIBUTION = ROUND_ROBIN)  \nAS \nSELECT [Date] \n\t, [StoreCode] \n\t, [CustomerId] \n\t, count(*) as numReg \n\tFROM [sales].[sales] \n\tGROUP BY [Date] \n\t, [StoreCode] \n\t, [CustomerId]; \n\n/*\nCreate materalized view using HASH BY [Date], \ntte to create: 50 s\ntte main-query using this view: 2s\nPerf. gain: 2\n*/\n-- DROP VIEW sales.sales_mat_hash \nCREATE MATERIALIZED VIEW sales.sales_mat_hash \nWITH (DISTRIBUTION = HASH([Date]))  \nAS \nSELECT [Date] \n\t, [StoreCode] \n\t, [CustomerId] \n\t, count(*) as numReg \n\tFROM [sales].[sales] \n\tGROUP BY [Date] \n\t, [StoreCode] \n\t, [CustomerId]; \n\n/*\nPerformance Accelerator for Azure Synapse Analytics: \naprox: Public Preview March 2021\nhttps://docs.microsoft.com/en-us/power-platform-release-plan/2020wave2/power-bi/synapse-integration \n*/",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

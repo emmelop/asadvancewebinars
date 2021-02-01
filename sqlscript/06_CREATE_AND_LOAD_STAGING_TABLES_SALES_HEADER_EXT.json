@@ -1,0 +1,19 @@
+{
+	"name": "06_CREATE_AND_LOAD_STAGING_TABLES_SALES_HEADER_EXT",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "\n\n--DROP EXTERNAL TABLE sales_header_external\n--drop TABLE staging.Sales_Header_ext\n\n-- Sales_Header (14.028.861) - HEAP & CTAS \nIF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\nGO\n\nIF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'raw_dlsasa_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [raw_dlsasa_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION = 'abfss://raw@dlsasa.dfs.core.windows.net', \n\t\tTYPE     = HADOOP \n\t)\nGO\n\nCREATE EXTERNAL TABLE sales_header_external (\n\t[SaleId] int,\n\t[OldTicket] varchar(30),\n\t[InvoiceCode] varchar(30),\n\t[Date] datetime2(7),\n\t[StoreCode] varchar(30),\n\t[CustomerId] int,\n\t[LoadDate] datetime2(7),\n\t[TriggerDate] int\n\t)\n\tWITH (\n\tLOCATION = 'raw/SalesHeader/20201211/',\n\tDATA_SOURCE = [raw_dlsasa_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat],\n\tREJECT_TYPE = VALUE,\n\tREJECT_VALUE = 0\n\t)\nGO\n\n--SELECT TOP 100 * FROM sales_header_external\n\n--SELECT count(1) FROM sales_header_external\n\nCREATE TABLE staging.Sales_Header_ext -- Total execution time: 00:00:33.772\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tHEAP\n\t)\nAS \nSELECT \t [SaleId],\n\t [OldTicket],\n\t [InvoiceCode],\n\t [Date],\n\t [StoreCode],\n\t [CustomerId],\n\t [LoadDate],\n\t [TriggerDate]\nFROM sales_header_external\n\n--SELECT TOP 100 * FROM staging.Sales_Header_ext\n\n--SELECT count(1) FROM staging.Sales_Header_ext\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

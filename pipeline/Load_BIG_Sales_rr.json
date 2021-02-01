@@ -1,0 +1,59 @@
+{
+	"name": "Load_BIG_Sales_rr",
+	"properties": {
+		"activities": [
+			{
+				"name": "sales",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*",
+							"enablePartitionDiscovery": false
+						}
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"preCopyScript": "CREATE TABLE [sales].[sales_rr]\n( \n\t[SaleLineId] [bigint]  NULL,\n\t[SaleId] [int]  NULL,\n\t[InvoiceLine] [int]  NULL,\n\t[OldTicket] [varchar](20)  NULL,\n\t[InvoiceCode] [varchar](20)  NULL,\n\t[Quantity] [numeric](18,4)  NULL,\n\t[SalePrice] [numeric](18,4)  NULL,\n\t[PurchasePrice] [numeric](18,4)  NULL,\n\t[UnitMeasure] [varchar](1)  NULL,\n\t[Date] [date]  NULL,\n\t[StoreCode] [varchar](10)  NULL,\n\t[CustomerId] [int]  NULL,\n\t[ProductCode] [varchar](10)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)",
+						"allowCopyCommand": true
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "dlsasa_sales_big",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sqldw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "sales",
+							"table": "sales_rr"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Setup"
+		},
+		"annotations": [],
+		"lastPublishTime": "2021-01-13T10:26:39Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

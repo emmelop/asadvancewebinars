@@ -1,0 +1,19 @@
+{
+	"name": "02_PERF_DIM_TO_REPLICATE",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 03"
+		},
+		"content": {
+			"query": "-- created schema replicated\nCREATE TABLE [replicated].[customer]\nWITH\n(\n\tDISTRIBUTION = REPLICATE,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nas select * from common.customer\n\nUPDATE STATISTICS [replicated].[customer]\n\nCREATE TABLE [replicated].[date]\nWITH\n(\n\tDISTRIBUTION = REPLICATE,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nas select * from common.date\n\nUPDATE STATISTICS [replicated].[date]\n\nCREATE TABLE [replicated].[product]\nWITH\n(\n\tDISTRIBUTION = REPLICATE,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nas select * from common.product\n\nUPDATE STATISTICS [replicated].[product]\n\nCREATE TABLE [replicated].[store]\nWITH\n(\n\tDISTRIBUTION = REPLICATE,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nas select * from common.store\n\nUPDATE STATISTICS [replicated].[store]",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

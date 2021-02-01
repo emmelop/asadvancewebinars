@@ -1,0 +1,19 @@
+{
+	"name": "14_FACT_INC_LOAD_MERGE",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "MERGE [fact].[Sales_Hash_Merge] AS TARGET -- (20.752.790 rows affected) -- Time execution 00:09:01:000\nUSING [etl].[Fact_Sales_Merge_INC] AS SOURCE\n\tON (TARGET.[bkSaleId] = SOURCE.[bkSaleId])\nWHEN MATCHED\n\tTHEN UPDATE\n\tSET\t   TARGET.[DateKey]\t\t\t=\tSOURCE.[DateKey]\n\t\t  ,TARGET.[sk_Store]\t\t=\tSOURCE.[sk_Store]\n\t\t  ,TARGET.[sk_Product]\t\t=\tSOURCE.[sk_Product]\n\t\t  ,TARGET.[sk_Customer]\t\t=\tSOURCE.[sk_Customer]\n\t\t  ,TARGET.[SaleLineId]\t\t=\tSOURCE.[SaleLineId]\n\t\t  ,TARGET.[SaleId]\t\t\t=\tSOURCE.[SaleId]\n\t\t  ,TARGET.[InvoiceLine]\t\t=\tSOURCE.[InvoiceLine]\n\t\t  ,TARGET.[OldTicket]\t\t=\tSOURCE.[OldTicket]\n\t\t  ,TARGET.[ProductCode]\t\t=\tSOURCE.[ProductCode]\n\t\t  ,TARGET.[Quantity]\t\t=\tSOURCE.[Quantity]\n\t\t  ,TARGET.[SalePrice]\t\t=\tSOURCE.[SalePrice]\n\t\t  ,TARGET.[PurchasePrice]\t=\tSOURCE.[PurchasePrice]\n\t\t  ,TARGET.[UnitMeasure]\t\t=\tSOURCE.[UnitMeasure]\n\t\t  ,TARGET.[InvoiceCode]\t\t=\tSOURCE.[InvoiceCode]\n\t\t  ,TARGET.[Date]\t\t\t=\tSOURCE.[Date]\n\t\t  ,TARGET.[StoreCode]\t\t=\tSOURCE.[StoreCode]\n\t\t  ,TARGET.[CustomerId]\t\t=\tSOURCE.[CustomerId]\nWHEN NOT MATCHED BY TARGET\n\tTHEN\n\t\tINSERT (\n\t\t\t[DateKey]\n\t\t\t,[sk_Store]\n\t\t\t,[sk_Product]\n\t\t\t,[sk_Customer]\n\t\t\t,[SaleLineId]\n\t\t\t,[SaleId]\n\t\t\t,[bkSaleId]\n\t\t\t,[InvoiceLine]\n\t\t\t,[OldTicket]\n\t\t\t,[ProductCode]\n\t\t\t,[Quantity]\n\t\t\t,[SalePrice]\n\t\t\t,[PurchasePrice]\n\t\t\t,[UnitMeasure]\n\t\t\t,[InvoiceCode]\n\t\t\t,[Date]\n\t\t\t,[StoreCode]\n\t\t\t,[CustomerId])\n\t\tVALUES (\n\t\t\tSOURCE.[DateKey]\n\t\t\t,SOURCE.[sk_Store]\n\t\t\t,SOURCE.[sk_Product]\n\t\t\t,SOURCE.[sk_Customer]\n\t\t\t,SOURCE.[SaleLineId]\n\t\t\t,SOURCE.[SaleId]\n\t\t\t,SOURCE.[bkSaleId]\n\t\t\t,SOURCE.[InvoiceLine]\n\t\t\t,SOURCE.[OldTicket]\n\t\t\t,SOURCE.[ProductCode]\n\t\t\t,SOURCE.[Quantity]\n\t\t\t,SOURCE.[SalePrice]\n\t\t\t,SOURCE.[PurchasePrice]\n\t\t\t,SOURCE.[UnitMeasure]\n\t\t\t,SOURCE.[InvoiceCode]\n\t\t\t,SOURCE.[Date]\n\t\t\t,SOURCE.[StoreCode]\n\t\t\t,SOURCE.[CustomerId]\n--\t\t);\n\n--delete from [fact].[Sales_Hash_Merge] -- 20.752.790 rows affected - Time Execution = 00:00:45:000\n--where SALELINEID > 174616293",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "02_GRANT_ACCESS_TO_SQLDW",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 04"
+		},
+		"content": {
+			"query": "-- READ ACCESS TO BI ANALYST\nDROP USER [bianalyst]\n\nCREATE USER [bianalyst] FROM EXTERNAL PROVIDER\n\nexec sp_addrolemember 'db_datareader', [bianalyst]\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

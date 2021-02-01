@@ -1,0 +1,19 @@
+{
+	"name": "01_GRANT_ACCESS_TO_SQLOD",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 04"
+		},
+		"content": {
+			"query": "-- db_owner TO BI ANALYST\n\nUSE ODstaging\nDROP USER [bianalyst]\n\nUSE master\nDROP LOGIN [bianalyst]\n\nUSE master\nCREATE LOGIN [bianalyst] FROM EXTERNAL PROVIDER\n\nUSE ODstaging\nCREATE USER [bianalyst] FROM LOGIN [bianalyst]\n\nALTER ROLE db_owner ADD MEMBER [bianalyst]\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "ODStaging"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

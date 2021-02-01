@@ -1,0 +1,19 @@
+{
+	"name": "d08-SQL Prep for ML Enrich Model",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"content": {
+			"query": "\n-- copy table before using the previous one so we have one\n-- already prepare for ML model enrichment:\n\n-- Original table, should be count = 0 (last column) \nSELECT  [ProductId]\n,[TransactionDate]\n,[Hour]\n,[TotalQuantity]\n FROM [wwi].[ProductQuantityForecast]\n\n\n\nSET ANSI_NULLS ON\nGO\nSET QUOTED_IDENTIFIER ON\nGO\n\nDROP TABLE [wwi].[ProductQuantityForecast3]\n\nCREATE TABLE [wwi].[ProductQuantityForecast3]\nWITH\n(\n\tDISTRIBUTION = REPLICATE,\n\tCLUSTERED COLUMNSTORE INDEX\n)\nAS SELECT  [ProductId]\n,[TransactionDate]\n,[Hour]\n,[TotalQuantity]\n FROM [wwi].[ProductQuantityForecast]\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "04_Result-set_cache",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 03"
+		},
+		"content": {
+			"query": "\n\n-- Check if Result-set Caching is enabled/disabled per DB:\n\nselect name, is_result_set_caching_on from sys.databases\n\n-- Swich On Result-set Caching fro Dedicated SQL Pool\n-- mus use MASTER to run the following command:\n\nalter database sqldw set RESULT_SET_CACHING ON\n--alter database sqldw set RESULT_SET_CACHING OFF\n\n-- check cache space used by database:\n\nDBCC SHOWRESULTCACHESPACEUSED;\n-- DBCC DROPRESULTSETCACHE \n\n-- Chek queries stored in CACHE:\nSELECT request_id, command, result_cache_hit FROM sys.dm_pdw_exec_requests\norder by result_cache_hit desc  \n\n\n-- SELECT * FROM sys.dm_pdw_exec_requests",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

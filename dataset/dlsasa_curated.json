@@ -1,0 +1,107 @@
+{
+	"name": "dlsasa_curated",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "syn-asa-WorkspaceDefaultStorage",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "Parquet",
+		"typeProperties": {
+			"location": {
+				"type": "AzureBlobFSLocation",
+				"fileName": "date.parquet",
+				"folderPath": "curated/date",
+				"fileSystem": "raw"
+			},
+			"compressionCodec": "snappy"
+		},
+		"schema": [
+			{
+				"name": "DateKey",
+				"type": "INT32"
+			},
+			{
+				"name": "Date",
+				"type": "DATE"
+			},
+			{
+				"name": "DateTime",
+				"type": "INT96"
+			},
+			{
+				"name": "YearMonth",
+				"type": "INT32"
+			},
+			{
+				"name": "YearMonthDescription",
+				"type": "UTF8"
+			},
+			{
+				"name": "NYear",
+				"type": "INT32"
+			},
+			{
+				"name": "NMonth",
+				"type": "INT32"
+			},
+			{
+				"name": "NWeek",
+				"type": "INT32"
+			},
+			{
+				"name": "NWeekDay",
+				"type": "INT32"
+			},
+			{
+				"name": "NMonthDay",
+				"type": "INT32"
+			},
+			{
+				"name": "NYearDay",
+				"type": "INT32"
+			},
+			{
+				"name": "NQuarter",
+				"type": "INT32"
+			},
+			{
+				"name": "NSemester",
+				"type": "INT32"
+			},
+			{
+				"name": "DayName",
+				"type": "UTF8"
+			},
+			{
+				"name": "DayName_ES",
+				"type": "UTF8"
+			},
+			{
+				"name": "SortDayName",
+				"type": "UTF8"
+			},
+			{
+				"name": "SortDayName_ES",
+				"type": "UTF8"
+			},
+			{
+				"name": "MonthName",
+				"type": "UTF8"
+			},
+			{
+				"name": "MonthName_ES",
+				"type": "UTF8"
+			},
+			{
+				"name": "SortMonthName",
+				"type": "UTF8"
+			},
+			{
+				"name": "SortMonthName_ES",
+				"type": "UTF8"
+			}
+		]
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

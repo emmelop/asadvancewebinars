@@ -1,0 +1,19 @@
+{
+	"name": "03_Statistics",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 03"
+		},
+		"content": {
+			"query": "\n/*\nAfter loading data into dedicated SQL pool, collecting statistics on your data \nis one of the most important things you can do to optimize your queries.\n*/\n\n-- When the database AUTO_CREATE_STATISTICS option is on, dedicated SQL \n-- pool analyzes incoming user queries for missing statistics.\n\n-- You can check if your dedicated SQL pool has AUTO_CREATE_STATISTICS \n-- configured by running the following command:\n\nSELECT name, is_auto_create_stats_on\nFROM sys.databases\n\n\n-- If your dedicated SQL pool doesn't have AUTO_CREATE_STATISTICS configured, \n-- we recommend you enable this property by running the following command\n\n--ALTER DATABASE <yourdatawarehousename>\n--SET AUTO_CREATE_STATISTICS ON\n\n\n-- When automatic statistics are created, You can view stats that have \n-- already been created by running the DBCC SHOW_STATISTICS command:\n\n--DBCC SHOW_STATISTICS (<table_name>, <target>)\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

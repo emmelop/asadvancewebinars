@@ -1,0 +1,19 @@
+{
+	"name": "d0n-Synapse and ML_SQL_PREDICT",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"content": {
+			"query": "\n\n-- Retrieve the latest hex encoded ONNX model from the table\nDECLARE @model varbinary(max) = \n  (\n    SELECT Model \n    FROM [wwi_ml].[MLModel] \n    WHERE Id = (SELECT Top(1) max(ID) FROM [wwi_ml].[MLModel]));\n\n-- Run a prediction query\nSELECT d.*, p.*\nFROM \n    PREDICT(MODEL = @model, DATA = [wwi_ml].[SampleData] AS d, RUNTIME = ONNX )\n    WITH (prediction real) AS p;",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

@@ -1,0 +1,19 @@
+{
+	"name": "00_ScriptSQL_Load_Curated_Zone",
+	"properties": {
+		"folder": {
+			"name": "Setup"
+		},
+		"content": {
+			"query": "--CREATE SCHEMA curated\nCREATE EXTERNAL TABLE [curated].[customer]\nWITH (\n\tLOCATION = 'curated/customer/',\n\tDATA_SOURCE = [raw_dlsasa_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n)\nAS\nSELECT [CustomerID]\n,[CustomerCode]\n,[Name]\n,[Lastname]\n,[Birthday]\n,[MaritalStatus]\n,[Gender]\n,[Email]\n,[AnnualIncome]\n,[TotalChildren]\n,[ChildrenAtHome]\n,[PostalCode]\n,[Country]\n,[Occupation]\n,[AcademicLevel]\n FROM [etl].[customer]\nGO\n\nCREATE EXTERNAL TABLE [curated].[product]\nWITH (\n\tLOCATION = 'curated/product/',\n\tDATA_SOURCE = [raw_dlsasa_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n)\nAS\nSELECT [ProductCode]\n,[ProductName]\n,[Price]\n,[LastPurchasePrice]\n,[CategoryCode]\n,[Category]\n,[Line]\n,[PurchaseUnit]\n,[SaleUnit]\n,[RegularSupplier]\n,[Weight]\n,[Locked]\n,[PostingGroup]\n,[VAT_Bus_PostingGr_Price]\n,[VAT_Prod_PostingGroup]\n FROM [etl].[product]\nGO\n\n--DROP EXTERNAL TABLE [curated].[sales]\n\nCREATE EXTERNAL TABLE [curated].[sales]\nWITH (\n\tLOCATION = 'curated/sales/',\n\tDATA_SOURCE = [raw_dlsasa_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n)\nAS\nSELECT SaleLineId\n,[SaleId]\n,[InvoiceLine]\n,[OldTicket]\n,[InvoiceCode]\n,[Quantity]\n,[SalePrice]\n,[PurchasePrice]\n,[UnitMeasure]\n,[Date]\n,[StoreCode]\n,[CustomerId]\n,[ProductCode]\n FROM [etl].[sales]\nGO\n\nCREATE EXTERNAL TABLE [curated].[stores]\nWITH (\n\tLOCATION = 'curated/stores/',\n\tDATA_SOURCE = [raw_dlsasa_dfs_core_windows_net],\n\tFILE_FORMAT = [SynapseParquetFormat]\n)\nAS\nSELECT [StoreCode]\n,[StoreName]\n,[Latitude]\n,[Longitude]\n,[sq_ft_surface]\n,[SizeGroup]\n,[Employees]\n,[RentBase]\n,[RentPriceApplyReferenceIndex]\n,[RentYearContract]\n,[PostalCode]\n,[Country]\n,[IsDistributedData]\n,[IsActive]\n,[StoreId]\n FROM [etl].[stores]\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "ODstaging",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

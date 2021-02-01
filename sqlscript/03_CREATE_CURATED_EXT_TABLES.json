@@ -1,0 +1,19 @@
+{
+	"name": "03_CREATE_CURATED_EXT_TABLES",
+	"properties": {
+		"folder": {
+			"name": "W01-ASyn4-BIBA_Roles/Demo 02"
+		},
+		"content": {
+			"query": "  -- SAVE ETL IN CURATED ZONE DLSASA --> ~ 15 min\n    IF NOT EXISTS (select * from sys.schemas where name = 'curated') EXEC('CREATE SCHEMA curated')\n    GO\n\n    IF NOT EXISTS (SELECT * FROM sys.external_file_formats WHERE name = 'SynapseParquetFormat') \n\tCREATE EXTERNAL FILE FORMAT [SynapseParquetFormat] \n\tWITH ( FORMAT_TYPE = PARQUET)\n    GO\n\n    IF NOT EXISTS (SELECT * FROM sys.external_data_sources WHERE name = 'tempdata_dlsasa_dfs_core_windows_net') \n\tCREATE EXTERNAL DATA SOURCE [tempdata_dlsasa_dfs_core_windows_net] \n\tWITH (\n\t\tLOCATION   = 'https://dlsasa.dfs.core.windows.net/tempdata', \n\t)\n    GO\n    \n    CREATE EXTERNAL TABLE curated.sales\n    WITH (\n\t    LOCATION = 'curated/Sales/',\n\t\tDATA_SOURCE = [tempdata_dlsasa_dfs_core_windows_net],\n\t\tFILE_FORMAT = [SynapseParquetFormat]\n\t)\n    AS SELECT * FROM etl.sales \n    GO\n\n    CREATE EXTERNAL TABLE [curated].[customer]\n    WITH (\n        LOCATION = 'curated/customer/',\n        DATA_SOURCE = [tempdata_dlsasa_dfs_core_windows_net],\n        FILE_FORMAT = [SynapseParquetFormat]\n    )\n    AS\n    SELECT * FROM [etl].[customer]\n    GO\n\n    CREATE EXTERNAL TABLE [curated].[product]\n    WITH (\n        LOCATION = 'curated/product/',\n        DATA_SOURCE = [tempdata_dlsasa_dfs_core_windows_net],\n        FILE_FORMAT = [SynapseParquetFormat]\n    )\n    AS\n    SELECT * FROM [etl].[product]\n    GO\n\n    CREATE EXTERNAL TABLE [curated].[stores]\n    WITH (\n        LOCATION = 'curated/stores/',\n        DATA_SOURCE = [tempdata_dlsasa_dfs_core_windows_net],\n        FILE_FORMAT = [SynapseParquetFormat]\n    )\n    AS\n    SELECT * FROM [etl].[store]\n    GO\n\n    CREATE EXTERNAL TABLE [curated].[date]\n    WITH (\n        LOCATION = 'curated/date/',\n        DATA_SOURCE = [tempdata_dlsasa_dfs_core_windows_net],\n        FILE_FORMAT = [SynapseParquetFormat]\n    )\n    AS\n    SELECT * FROM [etl].[date]\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"name": "OD_STG",
+				"type": "SqlOnDemand"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

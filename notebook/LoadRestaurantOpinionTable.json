@@ -1,0 +1,89 @@
+{
+	"name": "LoadRestaurantOpinionTable",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/ad80bb35-cd7e-414e-84dc-af93d138fef0/resourceGroups/rg-demosynapse/providers/Microsoft.Synapse/workspaces/syn-asa/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://syn-asa.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28,
+				"extraHeader": null
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import json\n",
+					"import requests\n",
+					"url = \"https://raw.githubusercontent.com/rekiksab/Yelp-Data-Challenge-2013/master/yelp_challenge/yelp_phoenix_academic_dataset/yelp_academic_dataset_review.json\"\n",
+					"r = requests.get(url)\n",
+					"df = sqlContext.createDataFrame([json.loads(line) for line in r.iter_lines()])"
+				],
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"\n",
+					"import json\n",
+					"import requests\n",
+					"url = \"https://raw.githubusercontent.com/rekiksab/Yelp-Data-Challenge-2013/master/yelp_challenge/yelp_phoenix_academic_dataset/yelp_academic_dataset_review.json\"\n",
+					"r = requests.get(url)\n",
+					"df = sqlContext.createDataFrame([json.loads(line) for line in r.iter_lines()])\n",
+					"\n",
+					"\n",
+					""
+				],
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.printSchema()"
+				],
+				"execution_count": 5
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"df.write.mode(\"overwrite\").saveAsTable(\"RestaurantReviews\")"
+				],
+				"execution_count": 6
+			}
+		]
+	}
+}

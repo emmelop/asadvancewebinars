@@ -1,0 +1,591 @@
+{
+	"name": "d06-Synapse AutoML from Link to CosmosDB",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"synapse_widget": {
+				"version": "0.1"
+			},
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/ad80bb35-cd7e-414e-84dc-af93d138fef0/resourceGroups/rg-demosynapse/providers/Microsoft.Synapse/workspaces/syn-asa/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://syn-asa.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"create database if not exists RetailSalesDemoDB"
+				],
+				"attachments": null,
+				"execution_count": 0
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Create Azure ML Environment and linkt it to this Workspace:\n",
+					"Using T-SQP API we can create ML Workspace and all its context (KeyVault, Storage Account, App Insights...), and link it to the curren ASA Workspace as a linked service, you can use in your ML notebooks inside ASA.\n",
+					""
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"# Run only in case you want to demo the creation of the ML environment from inside\n",
+					"# ASA. Otherwise an ML environment has been already provide by MLopez in this notebook\n",
+					"\n",
+					"%%sql\n",
+					"create table if not exists RetailSalesDemoDB.RetailSales using cosmos.olap options (\n",
+					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
+					"    spark.cosmos.preferredRegions 'westeurope',\n",
+					"    spark.cosmos.container 'RetailSales'\n",
+					")"
+				],
+				"attachments": null,
+				"execution_count": 0
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"create table if not exists RetailSalesDemoDB.StoreDemographics using cosmos.olap options (\n",
+					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
+					"    spark.cosmos.preferredRegions 'westeurope',\n",
+					"    spark.cosmos.container 'StoreDemoGraphics'\n",
+					")"
+				],
+				"attachments": null,
+				"execution_count": 2
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					""
+				],
+				"attachments": null,
+				"execution_count": null
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					}
+				},
+				"source": [
+					"%%sql\n",
+					"create table if not exists RetailSalesDemoDB.Product using cosmos.olap options (\n",
+					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
+					"    spark.cosmos.preferredRegions 'westeurope',\n",
+					"    spark.cosmos.container 'Products'\n",
+					")\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": 3
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [
+								"productCode"
+							],
+							"values": [
+								"storeId"
+							],
+							"yLabel": "storeId",
+							"xLabel": "productCode",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{\"storeId\":{\"surface.go\":26385,\"surface.laptop3\":26385,\"surface.pro7\":26364}}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": false
+					}
+				},
+				"source": [
+					"data = spark.sql(\"select a.storeId \\\n",
+					"                       , b.productCode \\\n",
+					"                       , b.wholeSaleCost \\\n",
+					"                       , b.basePrice \\\n",
+					"                       , c.ratioAge60 \\\n",
+					"                       , c.collegeRatio \\\n",
+					"                       , c.income \\\n",
+					"                       , c.highIncome150Ratio \\\n",
+					"                       , c.largeHH \\\n",
+					"                       , c.minoritiesRatio \\\n",
+					"                       , c.more1FullTimeEmployeeRatio \\\n",
+					"                       , c.distanceNearestWarehouse \\\n",
+					"                       , c.salesNearestWarehousesRatio \\\n",
+					"                       , c.avgDistanceNearest5Supermarkets \\\n",
+					"                       , c.salesNearest5StoresRatio \\\n",
+					"                       , a.quantity \\\n",
+					"                       , a.logQuantity \\\n",
+					"                       , a.advertising \\\n",
+					"                       , a.price \\\n",
+					"                       , a.weekStarting \\\n",
+					"                 from RetailSalesDemoDB.retailsales a \\\n",
+					"                 left join RetailSalesDemoDB.product b \\\n",
+					"                 on a.productcode = b.productcode \\\n",
+					"                 left join RetailSalesDemoDB.storedemographics c \\\n",
+					"                 on a.storeId = c.storeId \\\n",
+					"                 order by a.weekStarting, a.storeId, b.productCode\")\n",
+					"\n",
+					"display(data)\n",
+					"# to-do: export to csv\n",
+					"# to-do: register- as dataset?? "
+				],
+				"attachments": null,
+				"execution_count": 5
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Azure Machine Learning AutoML: build a Forecasting Model¶\n",
+					""
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Leverage power of Azure Machine Learning's AutoML to build a Forecasting Model\n",
+					"# Setup\n",
+					"\n",
+					"var_subscription_id = 'ad80bb35-cd7e-414e-84dc-af93d138fef0'\n",
+					"var_aml_subscription_id = 'ad80bb35-cd7e-414e-84dc-af93d138fef0'\n",
+					"var_resource_group_name = \"rg-demosynapse\"\n",
+					"var_storage_account_name = \"stasamldatascientists01\"\n",
+					"var_mlwsname = \"asa-mlwspace-mlopez\"\n",
+					"var_mlwslocation = \"westeurope\"\n",
+					"\n",
+					"import azureml.core\n",
+					"import pandas as pd\n",
+					"import numpy as np\n",
+					"import logging\n",
+					"from azureml.core.workspace import Workspace\n",
+					"from azureml.core import Workspace\n",
+					"from azureml.core.experiment import Experiment\n",
+					"from azureml.train.automl import AutoMLConfig\n",
+					"import os\n",
+					"\n",
+					"# Azure ML context vars\n",
+					"subscription_id = os.getenv(var_subscription_id, default=var_aml_subscription_id)\n",
+					"resource_group = os.getenv(var_resource_group_name, default=var_resource_group_name)\n",
+					"workspace_name = os.getenv(var_mlwsname, default=var_mlwsname)\n",
+					"workspace_region = os.getenv(var_mlwslocation, default=var_mlwslocation)\n",
+					"\n",
+					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
+					"ws.write_config()\n",
+					"    \n",
+					"experiment_name = 'automl-surfaceforecasting'\n",
+					"experiment = Experiment(ws, experiment_name)\n",
+					"output = {}\n",
+					"output['Subscription ID'] = ws.subscription_id\n",
+					"output['Workspace'] = ws.name\n",
+					"output['SKU'] = ws.sku\n",
+					"output['Resource Group'] = ws.resource_group\n",
+					"output['Location'] = ws.location\n",
+					"output['Run History Name'] = experiment_name\n",
+					"pd.set_option('display.max_colwidth', -1)\n",
+					"outputDf = pd.DataFrame(data = output, index = [''])\n",
+					"outputDf.T"
+				],
+				"attachments": null,
+				"execution_count": 6
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Data Preparation - Feature engineering, Splitting train & test datasets\n",
+					""
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Data Preparation - Feature engineering, Splitting train & test datasets\n",
+					"# Initial variables\n",
+					"\n",
+					"time_column_name = 'weekStarting'\n",
+					"grain_column_names = ['storeId', 'productCode']\n",
+					"target_column_name = 'quantity'\n",
+					"use_stores = [2, 5, 8, 71, 102]\n",
+					"n_test_periods = 20\n",
+					"\n",
+					"\n",
+					"# DataFrame\n",
+					"df = data.toPandas()\n",
+					"df[time_column_name] = pd.to_datetime(df[time_column_name])\n",
+					"df['storeId'] = pd.to_numeric(df['storeId'])\n",
+					"df['quantity'] = pd.to_numeric(df['quantity'])\n",
+					"df['advertising'] = pd.to_numeric(df['advertising'])\n",
+					"df['price'] = df['price'].astype(float)\n",
+					"df['basePrice'] = df['basePrice'].astype(float)\n",
+					"df['ratioAge60'] = df['ratioAge60'].astype(float)\n",
+					"df['collegeRatio'] = df['collegeRatio'].astype(float)\n",
+					"df['highIncome150Ratio'] = df['highIncome150Ratio'].astype(float)\n",
+					"df['income'] = df['income'].astype(float)\n",
+					"df['largeHH'] = df['largeHH'].astype(float)\n",
+					"df['minoritiesRatio'] = df['minoritiesRatio'].astype(float)\n",
+					"df['logQuantity'] = df['logQuantity'].astype(float)\n",
+					"df['more1FullTimeEmployeeRatio'] = df['more1FullTimeEmployeeRatio'].astype(float)\n",
+					"df['distanceNearestWarehouse'] = df['distanceNearestWarehouse'].astype(float)\n",
+					"df['salesNearestWarehousesRatio'] = df['salesNearestWarehousesRatio'].astype(float)\n",
+					"df['avgDistanceNearest5Supermarkets'] = df['avgDistanceNearest5Supermarkets'].astype(float)\n",
+					"df['salesNearest5StoresRatio'] = df['salesNearest5StoresRatio'].astype(float)\n",
+					"# Enrich model features: (ej. birthdate -> AGE, time since last sale...)\n",
+					"\n",
+					"# Time Series\n",
+					"data_subset = df[df.storeId.isin(use_stores)]\n",
+					"nseries = data_subset.groupby(grain_column_names).ngroups\n",
+					"print('Data subset contains {0} individual time-series.'.format(nseries))\n",
+					"\n",
+					"# Group by date, n is number of periods in which I partition my set\n",
+					"def split_last_n_by_grain(df, n):\n",
+					"    \"\"\"Group df by grain and split on last n rows for each group.\"\"\"\n",
+					"    df_grouped = (df.sort_values(time_column_name) # Sort by ascending time\n",
+					"                  .groupby(grain_column_names, group_keys=False))\n",
+					"    df_head = df_grouped.apply(lambda dfg: dfg.iloc[:-n])\n",
+					"    df_tail = df_grouped.apply(lambda dfg: dfg.iloc[-n:])\n",
+					"    return df_head, df_tail\n",
+					"\n",
+					"# splitting\n",
+					"train, test = split_last_n_by_grain(data_subset, n_test_periods)\n",
+					"print(len(train),len(test))\n",
+					"train.to_csv (r'./SurfaceSales_train.csv', index = None, header=True)\n",
+					"test.to_csv (r'./SurfaceSales_test.csv', index = None, header=True)\n",
+					"datastore = ws.get_default_datastore()\n",
+					"datastore.upload_files(files = ['./SurfaceSales_train.csv', './SurfaceSales_test.csv'], target_path = 'dataset/', overwrite = True,show_progress = True)\n",
+					"\n",
+					"# loading the train dataset\n",
+					"from azureml.core.dataset import Dataset\n",
+					"train_dataset = Dataset.Tabular.from_delimited_files(path=datastore.path('dataset/SurfaceSales_train.csv'))\n",
+					"\n",
+					"#to-do: register dataset into azure ml datasets\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# register dataset into azure ml\n",
+					"# Register the tabular dataset\n",
+					"try:\n",
+					"    train_dataset = train_dataset.register(workspace=ws, \n",
+					"                                        name='surface_sales tabular',\n",
+					"                                        description='surface sales, accessing cosmos db analytical store',\n",
+					"                                        tags = {'format':'CSV'},\n",
+					"                                        create_new_version=True)\n",
+					"except Exception as ex:\n",
+					"    print(ex)\n",
+					"\n",
+					"# Register the file dataset\n",
+					"'''\n",
+					"try:\n",
+					"    train = train.register(workspace=ws,\n",
+					"                                            name='surface_sales file',\n",
+					"                                            description='surface sales, accessing cosmos db analytical store',\n",
+					"                                            tags = {'format':'CSV'},\n",
+					"                                            create_new_version=True)\n",
+					"except Exception as ex:\n",
+					"    print(ex)\n",
+					"'''\n",
+					"print('Datasets registered')\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": 8
+			},
+			{
+				"cell_type": "markdown",
+				"source": [
+					"## Training the Models using AutoML Forecasting\n",
+					"Please notice that **compute_target** is commented, meaning that the <ins>model training will run locally in Synapse Spark</ins>.\n",
+					""
+				],
+				"attachments": null
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Training the Models using AutoML Forecasting\n",
+					"# Please notice that compute_target is commented, meaning that the model training will run locally in Synapse Spark.\n",
+					"\n",
+					"# Parameters\n",
+					"time_series_settings = {\n",
+					"    'time_column_name': time_column_name,\n",
+					"    'grain_column_names': grain_column_names,\n",
+					"    'max_horizon': n_test_periods\n",
+					"}\n",
+					"\n",
+					"# Config\n",
+					"automl_config = AutoMLConfig(task='forecasting',\n",
+					"                             debug_log='automl_ss_sales_errors.log',\n",
+					"                             primary_metric='normalized_mean_absolute_error',\n",
+					"                             experiment_timeout_hours=0.5,\n",
+					"                             training_data=train_dataset,\n",
+					"                             label_column_name=target_column_name,\n",
+					"                             #compute_target=compute_target,\n",
+					"                             enable_early_stopping=True,\n",
+					"                             n_cross_validations=3,\n",
+					"                             verbosity=logging.INFO,\n",
+					"                             **time_series_settings),\n",
+					"\n",
+					"# Running the training\n",
+					"remote_run = experiment.submit(automl_config, show_output=True)\n",
+					"\n",
+					"\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Retrieving the Best Model and Forecasting\n",
+					"# \n",
+					"# Retrieving the best model\n",
+					"best_run, fitted_model = remote_run.get_output()\n",
+					"print(fitted_model.steps)\n",
+					"model_name = best_run.properties['model_name']\n",
+					"print(model_name)\n",
+					"\n",
+					"# Forecasting based on test dataset\n",
+					"X_test = test\n",
+					"y_test = X_test.pop(target_column_name).values\n",
+					"X_test[time_column_name] = pd.to_datetime(X_test[time_column_name])\n",
+					"y_predictions, X_trans = fitted_model.forecast(X_test)\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": 8
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"#  Plotting the Results\n",
+					"import pandas as pd\n",
+					"import numpy as np\n",
+					"from pandas.tseries.frequencies import to_offset\n",
+					"\n",
+					"\n",
+					"def align_outputs(y_predicted, X_trans, X_test, y_test, target_column_name,\n",
+					"                  predicted_column_name='predicted',\n",
+					"                  horizon_colname='horizon_origin'):\n",
+					"    \"\"\"\n",
+					"    Demonstrates how to get the output aligned to the inputs\n",
+					"    using pandas indexes. Helps understand what happened if\n",
+					"    the output's shape differs from the input shape, or if\n",
+					"    the data got re-sorted by time and grain during forecasting.\n",
+					"\n",
+					"    Typical causes of misalignment are:\n",
+					"    * we predicted some periods that were missing in actuals -> drop from eval\n",
+					"    * model was asked to predict past max_horizon -> increase max horizon\n",
+					"    * data at start of X_test was needed for lags -> provide previous periods\n",
+					"    \"\"\"\n",
+					"\n",
+					"    if (horizon_colname in X_trans):\n",
+					"        df_fcst = pd.DataFrame({predicted_column_name: y_predicted,\n",
+					"                                horizon_colname: X_trans[horizon_colname]})\n",
+					"    else:\n",
+					"        df_fcst = pd.DataFrame({predicted_column_name: y_predicted})\n",
+					"\n",
+					"    # y and X outputs are aligned by forecast() function contract\n",
+					"    df_fcst.index = X_trans.index\n",
+					"\n",
+					"    # align original X_test to y_test\n",
+					"    X_test_full = X_test.copy()\n",
+					"    X_test_full[target_column_name] = y_test\n",
+					"\n",
+					"    # X_test_full's index does not include origin, so reset for merge\n",
+					"    df_fcst.reset_index(inplace=True)\n",
+					"    X_test_full = X_test_full.reset_index().drop(columns='index')\n",
+					"    together = df_fcst.merge(X_test_full, how='right')\n",
+					"\n",
+					"    # drop rows where prediction or actuals are nan\n",
+					"    # happens because of missing actuals\n",
+					"    # or at edges of time due to lags/rolling windows\n",
+					"    clean = together[together[[target_column_name,\n",
+					"                               predicted_column_name]].notnull().all(axis=1)]\n",
+					"    return(clean)\n",
+					"\n",
+					"\n",
+					"df_all = align_outputs(y_predictions, X_trans, X_test, y_test, target_column_name)\n",
+					"\n",
+					"from azureml.automl.core._vendor.automl.client.core.common import metrics\n",
+					"from matplotlib import pyplot as plt\n",
+					"from automl.client.core.common import constants\n",
+					"\n",
+					"# use automl metrics module\n",
+					"scores = metrics.compute_metrics_regression(\n",
+					"    df_all['predicted'],\n",
+					"    df_all[target_column_name],\n",
+					"    list(constants.Metric.SCALAR_REGRESSION_SET),\n",
+					"    None, None, None)\n",
+					"\n",
+					"print(\"[Test data scores]\\n\")\n",
+					"for key, value in scores.items():    \n",
+					"    print('{}:   {:.3f}'.format(key, value))\n",
+					"    \n",
+					"# Plot outputs\n",
+					"#%matplotlib inline\n",
+					"test_pred = plt.scatter(df_all[target_column_name], df_all['predicted'], color='b')\n",
+					"test_test = plt.scatter(df_all[target_column_name], df_all[target_column_name], color='g')\n",
+					"plt.legend((test_pred, test_test), ('prediction', 'truth'), loc='upper left', fontsize=8)\n",
+					"plt.show()\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": 9
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"# Closing\n",
+					"\"\"\"\n",
+					"At this point you should have a chart like this one in the image below, created wit AutoML and MatplotLib. The results are that good because of the logQuantity column, a data Leakage calculated from que quantity column. You can try to run the same experiment without it.\n",
+					"\"\"\"\n",
+					""
+				],
+				"attachments": null,
+				"execution_count": null
+			}
+		]
+	}
+}

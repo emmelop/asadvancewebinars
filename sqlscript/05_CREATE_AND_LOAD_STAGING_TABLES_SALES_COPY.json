@@ -1,0 +1,19 @@
+{
+	"name": "05_CREATE_AND_LOAD_STAGING_TABLES_SALES_COPY",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "-- drop table staging.Sales_Lines\n-- drop table staging.Sales_Lines_CCI\n\n-- Sales_Lines (868.481.140) - COPY # HEAP  \nIF NOT EXISTS (SELECT * FROM sys.objects WHERE NAME = 'Sales_Lines' AND TYPE = 'U')\nCREATE TABLE staging.Sales_Lines\n\t(\n\t [SaleLineId] bigint,\n\t [SaleId] int,\n\t [InvoiceLine] int,\n\t [ProductCode] nvarchar(30),\n\t [Quantity] numeric(18,6),\n\t [SalePrice] numeric(19,4),\n\t [PurchasePrice] numeric(19,4),\n\t [UnitMeasure] nvarchar(30),\n\t [LoadDate] datetime2(7),\n\t [TriggerDate] int\n\t)\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\t-- CLUSTERED COLUMNSTORE INDEX\n\tHEAP\n\t)\nGO\n\n--Uncomment the 4 lines below to create a stored procedure for data pipeline orchestration​                 \n--CREATE PROC bulk_load_Sales_Line\n--AS\n--BEGIN\nCOPY INTO staging.Sales_Lines -- Total execution time: 00:12:09.928\n(SaleLineId 1, SaleId 2, InvoiceLine 3, ProductCode 4, Quantity 5, SalePrice 6, PurchasePrice 7, UnitMeasure 8, LoadDate 9, TriggerDate 10)\nFROM 'https://dlsasa.dfs.core.windows.net/raw/raw/SalesLines/*/*.parquet'\nWITH\n(\n\tFILE_TYPE = 'PARQUET'\n\t,MAXERRORS = 0\n\t,IDENTITY_INSERT = 'OFF'\n)\n--END\nGO\n\n--SELECT count(1) FROM staging.Sales_Lines\n--SELECT TOP 100 * FROM staging.Sales_Line\nGO\n\n-- Sales_Lines (868.481.140) - COPY # CCI  \nIF NOT EXISTS (SELECT * FROM sys.objects WHERE NAME = 'Sales_Lines_CCI' AND TYPE = 'U')\nCREATE TABLE staging.Sales_Lines_CCI\n\t(\n\t [SaleLineId] bigint,\n\t [SaleId] int,\n\t [InvoiceLine] int,\n\t [ProductCode] nvarchar(30),\n\t [Quantity] numeric(18,6),\n\t [SalePrice] numeric(19,4),\n\t [PurchasePrice] numeric(19,4),\n\t [UnitMeasure] nvarchar(30),\n\t [LoadDate] datetime2(7),\n\t [TriggerDate] int\n\t)\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n\t)\nGO\n\n--Uncomment the 4 lines below to create a stored procedure for data pipeline orchestration​                 \n--CREATE PROC bulk_load_Sales_Line\n--AS\n--BEGIN\nCOPY INTO staging.Sales_Lines_CCI -- Total execution time: 00:16:56.988\n(SaleLineId 1, SaleId 2, InvoiceLine 3, ProductCode 4, Quantity 5, SalePrice 6, PurchasePrice 7, UnitMeasure 8, LoadDate 9, TriggerDate 10)\nFROM 'https://dlsasa.dfs.core.windows.net/raw/raw/SalesLines/*/*.parquet'\nWITH\n(\n\tFILE_TYPE = 'PARQUET'\n\t,MAXERRORS = 0\n\t,IDENTITY_INSERT = 'OFF'\n)\n--END\n--GO\n\n--SELECT count(1) FROM staging.Sales_Line_CCI\n--SELECT TOP 100 * FROM staging.Sales_Line_CCI\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

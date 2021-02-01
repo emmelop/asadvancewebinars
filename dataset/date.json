@@ -1,0 +1,114 @@
+{
+	"name": "date",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "Cornerchy",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlTable",
+		"schema": [
+			{
+				"name": "DateKey",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "Date",
+				"type": "date"
+			},
+			{
+				"name": "DateTime",
+				"type": "datetime",
+				"precision": 23,
+				"scale": 3
+			},
+			{
+				"name": "YearMonth",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "YearMonthDescription",
+				"type": "char"
+			},
+			{
+				"name": "NYear",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NMonth",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NWeek",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NWeekDay",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NMonthDay",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NYearDay",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NQuarter",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "NSemester",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "DayName",
+				"type": "varchar"
+			},
+			{
+				"name": "DayName_ES",
+				"type": "varchar"
+			},
+			{
+				"name": "SortDayName",
+				"type": "varchar"
+			},
+			{
+				"name": "SortDayName_ES",
+				"type": "varchar"
+			},
+			{
+				"name": "MonthName",
+				"type": "varchar"
+			},
+			{
+				"name": "MonthName_ES",
+				"type": "varchar"
+			},
+			{
+				"name": "SortMonthName",
+				"type": "varchar"
+			},
+			{
+				"name": "SortMonthName_ES",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": "Dimensions",
+			"table": "Date"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

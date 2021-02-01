@@ -1,0 +1,94 @@
+{
+	"name": "PredictAndSaveResults",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"nbformat": 4,
+		"nbformat_minor": 2,
+		"bigDataPool": {
+			"referenceName": "sparkpool",
+			"type": "BigDataPoolReference"
+		},
+		"sessionProperties": {
+			"driverMemory": "28g",
+			"driverCores": 4,
+			"executorMemory": "28g",
+			"executorCores": 4,
+			"numExecutors": 2,
+			"conf": {
+				"spark.dynamicAllocation.enabled": "false",
+				"spark.dynamicAllocation.minExecutors": "2",
+				"spark.dynamicAllocation.maxExecutors": "2"
+			}
+		},
+		"metadata": {
+			"saveOutput": true,
+			"language_info": {
+				"name": "python"
+			},
+			"a365ComputeOptions": {
+				"id": "/subscriptions/ad80bb35-cd7e-414e-84dc-af93d138fef0/resourceGroups/rg-demosynapse/providers/Microsoft.Synapse/workspaces/syn-asa/bigDataPools/sparkpool",
+				"name": "sparkpool",
+				"type": "Spark",
+				"endpoint": "https://syn-asa.dev.azuresynapse.net/livyApi/versions/2019-11-01-preview/sparkPools/sparkpool",
+				"auth": {
+					"type": "AAD",
+					"authResource": "https://dev.azuresynapse.net"
+				},
+				"sparkVersion": "2.4",
+				"nodeCount": 10,
+				"cores": 4,
+				"memory": 28
+			}
+		},
+		"cells": [
+			{
+				"cell_type": "code",
+				"source": [
+					"import mmlspark\n",
+					"\n",
+					"if mmlspark.__spark_package_version__ < \"1.0.0-rc3\":\n",
+					"    raise Exception(\"This notebook is not compatible with the current version of mmlspark: {}. Please upgrade to 1.0.0-rc3 or higher.\".format(\n",
+					"        mmlspark.__spark_package_version__))"
+				],
+				"attachments": null,
+				"execution_count": 1
+			},
+			{
+				"cell_type": "code",
+				"source": [
+					"from mmlspark.cognitive import *\n",
+					"from notebookutils import mssparkutils\n",
+					"from pyspark.sql.functions import explode\n",
+					"\n",
+					"# Fetch the subscription key (or a general Cognitive Service key) from Azure Key Vault\n",
+					"service_key = mssparkutils.credentials.getSecret(\"kv-asawebinars\", \"asa-secret-ml\", \"akv_SynapseWebinars\")\n",
+					"\n",
+					"# Load the data into a Spark DataFrame\n",
+					"df = spark.sql(\"SELECT * FROM default.restaurantreviews\")\n",
+					"\n",
+					"sentiment = (TextSentiment()\n",
+					"    .setLocation(\"westeurope\")\n",
+					"    .setSubscriptionKey(service_key)\n",
+					"    .setOutputCol(\"output\")\n",
+					"    .setErrorCol(\"error\")\n",
+					"    .setLanguage(\"en\")\n",
+					"    .setTextCol(\"text\"))\n",
+					"\n",
+					"results = sentiment.transform(df)\n",
+					"\n",
+					"# Show the results\n",
+					"display(results\\\n",
+					"    .select(\"text\", explode(\"output\").alias(\"exploded\"), \"error\")\\\n",
+					"    .select(\"text\", \"exploded.*\", \"error\")\\\n",
+					"    .limit(10))\n",
+					"\n",
+					"results.write.mode(\"overwrite\").saveAsTable(\"RestaurantSentiment\")"
+				],
+				"attachments": null,
+				"execution_count": null
+			}
+		]
+	}
+}

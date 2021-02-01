@@ -1,0 +1,97 @@
+{
+	"name": "sqldw",
+	"properties": {
+		"parameters": {
+			"schema": {
+				"type": "string",
+				"defaultValue": "sales"
+			},
+			"table": {
+				"type": "string",
+				"defaultValue": "sales"
+			}
+		},
+		"annotations": [],
+		"type": "SqlPoolTable",
+		"schema": [
+			{
+				"name": "SaleLineId",
+				"type": "bigint",
+				"precision": 19
+			},
+			{
+				"name": "SaleId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "InvoiceLine",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "OldTicket",
+				"type": "varchar"
+			},
+			{
+				"name": "InvoiceCode",
+				"type": "varchar"
+			},
+			{
+				"name": "Quantity",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "SalePrice",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "PurchasePrice",
+				"type": "decimal",
+				"precision": 18,
+				"scale": 4
+			},
+			{
+				"name": "UnitMeasure",
+				"type": "varchar"
+			},
+			{
+				"name": "Date",
+				"type": "datetime2",
+				"scale": 7
+			},
+			{
+				"name": "StoreCode",
+				"type": "varchar"
+			},
+			{
+				"name": "CustomerId",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "ProductCode",
+				"type": "varchar"
+			}
+		],
+		"typeProperties": {
+			"schema": {
+				"value": "@dataset().schema",
+				"type": "Expression"
+			},
+			"table": {
+				"value": "@dataset().table",
+				"type": "Expression"
+			}
+		},
+		"sqlPool": {
+			"referenceName": "sqldw",
+			"type": "SqlPoolReference"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}

@@ -1,0 +1,19 @@
+{
+	"name": "d06_3_Native scoring using the PREDICT",
+	"properties": {
+		"folder": {
+			"name": "W03-ASyn4-DataScientists"
+		},
+		"content": {
+			"query": "\n\n-- Step 1. Prepare and save the model\n/*\nCREATE DATABASE NativeScoringTest;\nGO\nUSE NativeScoringTest;\nGO\n*/\nDROP TABLE IF EXISTS iris_rx_data;\nGO\n\nCREATE TABLE iris_rx_data (\n    \"Sepal.Length\" float not null, \"Sepal.Width\" float not null\n  , \"Petal.Length\" float not null, \"Petal.Width\" float not null\n  , \"Species\" varchar(100) null\n);\nGO\n\n-- Populate the db\nINSERT INTO dbo.iris_rx_datairis_rx_data \n(\"Sepal.Length\", \"Sepal.Width\", \"Petal.Length\", \"Petal.Width\", \"Species\")\nEXECUTE sp_execute_external_script\n  @language = N'R'\n  , @script = N'iris_data <- iris;'\n  , @input_data_1 = N''\n  , @output_data_1_name = N'iris_data';\nGO\n\n-- create a table for storing models.\n\nDROP TABLE IF EXISTS ml_models;\nGO\nCREATE TABLE ml_models ( model_name nvarchar(100) not null primary key\n  , model_version nvarchar(100) not null\n  , native_model_object varbinary(max) not null);\nGO\n\n\n--creates a model based on the iris dataset and saves it to the table named models.\nDECLARE @model varbinary(max);\nEXECUTE sp_execute_external_script\n  @language = N'R'\n  , @script = N'\n    iris.sub <- c(sample(1:50, 25), sample(51:100, 25), sample(101:150, 25))\n    iris.dtree <- rxDTree(Species ~ Sepal.Length + Sepal.Width + Petal.Length + Petal.Width, data = iris[iris.sub, ])\n    model <- rxSerializeModel(iris.dtree, realtimeScoringOnly = TRUE)\n    '\n  , @params = N'@model varbinary(max) OUTPUT'\n  , @model = @model OUTPUT\n  INSERT [dbo].[ml_models]([model_name], [model_version], [native_model_object])\n  VALUES('iris.dtree','v1', @model) ;\n\n\n  -- use a statement such as the following to view the stored model in binary format\nSELECT *, datalength(native_model_object)/1024. as model_size_kb\nFROM ml_models;\n\n-- Step 2. Run PREDICT on the model\n\nDECLARE @model varbinary(max) = (\n  SELECT native_model_object\n  FROM ml_models\n  WHERE model_name = 'iris.dtree'\n  AND model_version = 'v1');\nSELECT d.*, p.*\n  FROM PREDICT(MODEL = @model, DATA = dbo.iris_rx_data as d)\n  WITH(setosa_Pred float, versicolor_Pred float, virginica_Pred float) as p;\ngo\n\n\n\n\n",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

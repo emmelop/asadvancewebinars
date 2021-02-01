@@ -1,0 +1,19 @@
+{
+	"name": "09_CREATE_AND_LOAD_STAGING_TABLES_SALES_LINES_COPY_AND_CURATED_FEW_PARTITIONS",
+	"properties": {
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 03 Load"
+		},
+		"content": {
+			"query": "\n-- drop table staging.sales_lines_from_curate_few_partitons\n\n-- Sales_Lines (868.481.140) - COPY & HEAP FROM CURATED__FEW_PARTITIONS\n\nIF NOT EXISTS (SELECT * FROM sys.objects WHERE NAME = 'sales_lines_from_curate_few_partitons' AND TYPE = 'U')\nCREATE TABLE staging.sales_lines_from_curate_few_partitons\n\t(\n\t [SaleLineId] bigint,\n\t [SaleId] int,\n\t [InvoiceLine] int,\n\t [OldTicket] nvarchar(30),\n\t [InvoiceCode] nvarchar(30),\n\t [Quantity] numeric(18,4),\n\t [SalePrice] numeric(18,4),\n\t [PurchasePrice] numeric(18,4),\n\t [UnitMeasure] nvarchar(30),\n\t [Date] date,\n\t [StoreCode] nvarchar(30),\n\t [CustomerId] int,\n\t [ProductCode] nvarchar(30)\n\t)\nWITH\n\t(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tHEAP\n\t)\nGO\n\n--Uncomment the 4 lines below to create a stored procedure for data pipeline orchestration​                 \n--CREATE PROC bulk_load_sales_lines_from_curate_partiton\n--AS\n--BEGIN\nCOPY INTO staging.sales_lines_from_curate_few_partitons -- Total execution time: 00:14:59.276\n(SaleLineId 1, SaleId 2, InvoiceLine 3, OldTicket 4, InvoiceCode 5, Quantity 6, SalePrice 7, PurchasePrice 8, UnitMeasure 9, Date 10, StoreCode 11, CustomerId 12, ProductCode 13)\nFROM 'https://dlsasa.dfs.core.windows.net/raw/curated/Sales/*'\nWITH\n(\n\tFILE_TYPE = 'PARQUET'\n\t,MAXERRORS = 0\n\t,IDENTITY_INSERT = 'OFF'\n)\n--END\nGO\n\n-- SELECT TOP 100 * FROM staging.sales_lines_from_curate_FEW_partitonS\n-- SELECT COUNT(1) FROM staging.sales_lines_from_curate_FEW_partitonS\nGO",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "sqldw",
+				"databaseName": "sqldw"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

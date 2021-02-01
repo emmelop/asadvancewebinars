@@ -1,0 +1,20 @@
+{
+	"name": "synapseazuremllinkedservice",
+	"type": "Microsoft.Synapse/workspaces/linkedservices",
+	"properties": {
+		"annotations": [],
+		"type": "AzureMLService",
+		"typeProperties": {
+			"subscriptionId": "ad80bb35-cd7e-414e-84dc-af93d138fef0",
+			"resourceGroupName": "rg-demosynapse",
+			"mlWorkspaceName": "azureml-synapse",
+			"servicePrincipalId": "2e24c596-13e7-4537-a1c4-209b7be215d5",
+			"tenant": "c8979ad7-1437-4f7b-9ba0-6d0bc461714e",
+			"encryptedCredential": "ew0KICAiVmVyc2lvbiI6ICIyMDE3LTExLTMwIiwNCiAgIlByb3RlY3Rpb25Nb2RlIjogIktleSIsDQogICJTZWNyZXRDb250ZW50VHlwZSI6ICJQbGFpbnRleHQiLA0KICAiQ3JlZGVudGlhbElkIjogIlNZTi1BU0FfN2MxNTRlNTYtNTA0Yi00NWViLTg0MWMtZTM4OTE4ZDI3NjhhIg0KfQ=="
+		},
+		"connectVia": {
+			"referenceName": "AutoResolveIntegrationRuntime",
+			"type": "IntegrationRuntimeReference"
+		}
+	}
+}

@@ -1,0 +1,473 @@
+{
+	"name": "00_Initial_Load_TO_SQLDW",
+	"properties": {
+		"activities": [
+			{
+				"name": "customer",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "curated/customer",
+							"wildcardFileName": "*.parquet"
+						}
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"preCopyScript": "DROP TABLE [common].[customer]\n\nCREATE TABLE [common].[customer]\n( \n\t[CustomerID] [int]  NULL,\n\t[CustomerCode] [nvarchar](20)  NULL,\n\t[Name] [nvarchar](40)  NULL,\n\t[Lastname] [nvarchar](40)  NULL,\n\t[Birthday] [datetime2](7)  NULL,\n\t[MaritalStatus] [nvarchar](1)  NULL,\n\t[Gender] [nvarchar](1)  NULL,\n\t[Email] [nvarchar](40)  NULL,\n\t[AnnualIncome] [decimal](18,4)  NULL,\n\t[TotalChildren] [int]  NULL,\n\t[ChildrenAtHome] [int]  NULL,\n\t[PostalCode] [nvarchar](20)  NULL,\n\t[Country] [nvarchar](100)  NULL,\n\t[Occupation] [nvarchar](30)  NULL,\n\t[AcademicLevel] [nvarchar](30)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"mappings": [
+							{
+								"source": {
+									"name": "CustomerID",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								},
+								"sink": {
+									"name": "CustomerID",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "CustomerCode",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "CustomerCode",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Name",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "Name",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Lastname",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "Lastname",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Birthday",
+									"type": "DateTime",
+									"physicalType": "DATE"
+								},
+								"sink": {
+									"name": "Birthday",
+									"type": "DateTime",
+									"physicalType": "DateTime"
+								}
+							},
+							{
+								"source": {
+									"name": "MaritalStatus",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "MaritalStatus",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Gender",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "Gender",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Email",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "Email",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AnnualIncome",
+									"type": "Decimal",
+									"physicalType": "DECIMAL"
+								},
+								"sink": {
+									"name": "AnnualIncome",
+									"type": "Decimal",
+									"physicalType": "Decimal"
+								}
+							},
+							{
+								"source": {
+									"name": "TotalChildren",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								},
+								"sink": {
+									"name": "TotalChildren",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "ChildrenAtHome",
+									"type": "Int32",
+									"physicalType": "INT_32"
+								},
+								"sink": {
+									"name": "ChildrenAtHome",
+									"type": "Int32",
+									"physicalType": "Int32"
+								}
+							},
+							{
+								"source": {
+									"name": "PostalCode",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "PostalCode",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Country",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "Country",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "Occupation",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "Occupation",
+									"type": "String",
+									"physicalType": "String"
+								}
+							},
+							{
+								"source": {
+									"name": "AcademicLevel",
+									"type": "String",
+									"physicalType": "UTF8"
+								},
+								"sink": {
+									"name": "AcademicLevel",
+									"type": "String",
+									"physicalType": "String"
+								}
+							}
+						],
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "dlsasa",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sqldw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "common",
+							"table": "customer"
+						}
+					}
+				]
+			},
+			{
+				"name": "store",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "curated/stores",
+							"wildcardFileName": "*.parquet"
+						}
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"preCopyScript": "DROP TABLE [sales].[store]\n\nCREATE TABLE [sales].[store]\n( \n\t[StoreCode] [nvarchar](10)  NULL,\n\t[StoreName] [nvarchar](40)  NULL,\n\t[Latitude] [decimal](10,6)  NULL,\n\t[Longitude] [decimal](10,6)  NULL,\n\t[sq_ft_surface] [int]  NULL,\n\t[SizeGroup] [nvarchar](10)  NULL,\n\t[Employees] [int]  NULL,\n\t[RentBase] [decimal](18,4)  NULL,\n\t[RentPriceApplyReferenceIndex] [bit]  NULL,\n\t[RentYearContract] [int]  NULL,\n\t[PostalCode] [nvarchar](20)  NULL,\n\t[Country] [nvarchar](100)  NULL,\n\t[IsDistributedData] [bit]  NULL,\n\t[IsActive] [bit]  NULL,\n\t[StoreId] [int]  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "dlsasa",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sqldw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "sales",
+							"table": "store"
+						}
+					}
+				]
+			},
+			{
+				"name": "product",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFolderPath": "curated/product",
+							"wildcardFileName": "*.parquet"
+						}
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"preCopyScript": "DROP TABLE [common].[product]\n\nCREATE TABLE [common].[product]\n( \n\t[ProductCode] [nvarchar](10)  NULL,\n\t[ProductName] [nvarchar](40)  NULL,\n\t[Price] [decimal](18,4)  NULL,\n\t[LastPurchasePrice] [decimal](18,4)  NULL,\n\t[CategoryCode] [nvarchar](2)  NULL,\n\t[Category] [nvarchar](40)  NULL,\n\t[Line] [nvarchar](20)  NULL,\n\t[PurchaseUnit] [nvarchar](1)  NULL,\n\t[SaleUnit] [nvarchar](1)  NULL,\n\t[RegularSupplier] [nvarchar](6)  NULL,\n\t[Weight] [decimal](18,4)  NULL,\n\t[Locked] [int]  NULL,\n\t[PostingGroup] [nvarchar](10)  NULL,\n\t[VAT_Bus_PostingGr_Price] [nvarchar](10)  NULL,\n\t[VAT_Prod_PostingGroup] [nvarchar](10)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "dlsasa",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sqldw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "common",
+							"table": "product"
+						}
+					}
+				]
+			},
+			{
+				"name": "Date",
+				"type": "Copy",
+				"dependsOn": [],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "AzureSqlSource",
+						"queryTimeout": "02:00:00",
+						"partitionOption": "None"
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"preCopyScript": "DROP TABLE [common].[date]\n\nCREATE TABLE [common].[date]\n( \n\t[DateKey] [int]  NULL,\n\t[Date] [date]  NULL,\n\t[DateTime] [datetime]  NULL,\n\t[YearMonth] [int]  NULL,\n\t[YearMonthDescription] [char](7)  NULL,\n\t[NYear] [int]  NULL,\n\t[NMonth] [int]  NULL,\n\t[NWeek] [int]  NULL,\n\t[NWeekDay] [int]  NULL,\n\t[NMonthDay] [int]  NULL,\n\t[NYearDay] [int]  NULL,\n\t[NQuarter] [int]  NULL,\n\t[NSemester] [int]  NULL,\n\t[DayName] [varchar](10)  NULL,\n\t[DayName_ES] [varchar](10)  NULL,\n\t[SortDayName] [varchar](4)  NULL,\n\t[SortDayName_ES] [varchar](4)  NULL,\n\t[MonthName] [varchar](10)  NULL,\n\t[MonthName_ES] [varchar](10)  NULL,\n\t[SortMonthName] [varchar](4)  NULL,\n\t[SortMonthName_ES] [varchar](4)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = ROUND_ROBIN,\n\tCLUSTERED COLUMNSTORE INDEX\n)"
+					},
+					"enableStaging": false,
+					"translator": {
+						"type": "TabularTranslator",
+						"typeConversion": true,
+						"typeConversionSettings": {
+							"allowDataTruncation": true,
+							"treatBooleanAsNumber": false
+						}
+					}
+				},
+				"inputs": [
+					{
+						"referenceName": "date",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sqldw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "common",
+							"table": "date"
+						}
+					}
+				]
+			},
+			{
+				"name": "sales",
+				"type": "Copy",
+				"dependsOn": [
+					{
+						"activity": "customer",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "store",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "product",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					},
+					{
+						"activity": "Date",
+						"dependencyConditions": [
+							"Succeeded"
+						]
+					}
+				],
+				"policy": {
+					"timeout": "7.00:00:00",
+					"retry": 0,
+					"retryIntervalInSeconds": 30,
+					"secureOutput": false,
+					"secureInput": false
+				},
+				"userProperties": [],
+				"typeProperties": {
+					"source": {
+						"type": "ParquetSource",
+						"storeSettings": {
+							"type": "AzureBlobFSReadSettings",
+							"recursive": true,
+							"wildcardFileName": "*"
+						}
+					},
+					"sink": {
+						"type": "SqlPoolSink",
+						"preCopyScript": "DROP TABLE [sales].[sales]\n\nCREATE TABLE [sales].[sales]\n( \n\t[SaleLineId] [bigint]  NULL,\n\t[SaleId] [int]  NULL,\n\t[InvoiceLine] [int]  NULL,\n\t[OldTicket] [varchar](20)  NULL,\n\t[InvoiceCode] [varchar](20)  NULL,\n\t[Quantity] [numeric](18,4)  NULL,\n\t[SalePrice] [numeric](18,4)  NULL,\n\t[PurchasePrice] [numeric](18,4)  NULL,\n\t[UnitMeasure] [varchar](1)  NULL,\n\t[Date] [date]  NULL,\n\t[StoreCode] [varchar](10)  NULL,\n\t[CustomerId] [int]  NULL,\n\t[ProductCode] [varchar](10)  NULL\n)\nWITH\n(\n\tDISTRIBUTION = HASH ( [ProductCode] ),\n\tCLUSTERED COLUMNSTORE INDEX\n)",
+						"allowCopyCommand": true
+					},
+					"enableStaging": false
+				},
+				"inputs": [
+					{
+						"referenceName": "dlsasa_sales_big",
+						"type": "DatasetReference"
+					}
+				],
+				"outputs": [
+					{
+						"referenceName": "sqldw",
+						"type": "DatasetReference",
+						"parameters": {
+							"schema": "sales",
+							"table": "sales"
+						}
+					}
+				]
+			}
+		],
+		"folder": {
+			"name": "Setup"
+		},
+		"annotations": [],
+		"lastPublishTime": "2020-12-18T14:15:39Z"
+	},
+	"type": "Microsoft.Synapse/workspaces/pipelines"
+}

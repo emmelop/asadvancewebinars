@@ -1,0 +1,20 @@
+{
+	"name": "01_HTAP-CosmosDB",
+	"properties": {
+		"description": "Query our analytical data store directly from Cosmos DB using Azure Synapse Link for Cosmos DB",
+		"folder": {
+			"name": "W02-ASyn4-DataEngineers/Demo 04-Synapse Link for CosmosDB"
+		},
+		"content": {
+			"query": "SELECT TOP 100 * \nFROM \n    OPENROWSET('CosmosDB',\n                'Account=cdb-synapse02;Database=RetailSalesDemoDB;Key=fBvcZ4GFD2Khx2BTDFnmZ2uu2HOt9xIAy5dnikx7tuBHAeQNJ5KqkrBRBZJCA0blmw5zuAZK6DAEHG2vmht63g==',\n                Products) AS Products\n\n\nSELECT count(*) \nFROM \n    OPENROWSET('CosmosDB',\n                'Account=cdb-synapse02;Database=RetailSalesDemoDB;Key=fBvcZ4GFD2Khx2BTDFnmZ2uu2HOt9xIAy5dnikx7tuBHAeQNJ5KqkrBRBZJCA0blmw5zuAZK6DAEHG2vmht63g==',\n                RetailSales) AS RetailSales\n\nSELECT *\nFROM \n    OPENROWSET('CosmosDB',\n                'Account=cdb-synapse02;Database=RetailSalesDemoDB;Key=fBvcZ4GFD2Khx2BTDFnmZ2uu2HOt9xIAy5dnikx7tuBHAeQNJ5KqkrBRBZJCA0blmw5zuAZK6DAEHG2vmht63g==',\n                RetailSales) AS RetailSales",
+			"metadata": {
+				"language": "sql"
+			},
+			"currentConnection": {
+				"poolName": "Built-in",
+				"databaseName": "master"
+			}
+		},
+		"type": "SqlQuery"
+	}
+}

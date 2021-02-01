@@ -1,0 +1,93 @@
+{
+	"name": "dim_Store",
+	"properties": {
+		"linkedServiceName": {
+			"referenceName": "AzureSynapseAnalytics1",
+			"type": "LinkedServiceReference"
+		},
+		"annotations": [],
+		"type": "AzureSqlDWTable",
+		"schema": [
+			{
+				"name": "sk_Store",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "StoreCode",
+				"type": "varchar"
+			},
+			{
+				"name": "StoreName",
+				"type": "varchar"
+			},
+			{
+				"name": "Latitude",
+				"type": "decimal",
+				"precision": 28,
+				"scale": 5
+			},
+			{
+				"name": "Longitude",
+				"type": "decimal",
+				"precision": 28,
+				"scale": 5
+			},
+			{
+				"name": "sq_ft_surface",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "SizeGroup",
+				"type": "varchar"
+			},
+			{
+				"name": "Employees",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "RentBase",
+				"type": "decimal",
+				"precision": 19,
+				"scale": 4
+			},
+			{
+				"name": "RentPriceApplyReferenceIndex",
+				"type": "bit"
+			},
+			{
+				"name": "RentYearContract",
+				"type": "int",
+				"precision": 10
+			},
+			{
+				"name": "PostalCode",
+				"type": "varchar"
+			},
+			{
+				"name": "Country",
+				"type": "varchar"
+			},
+			{
+				"name": "IsDistributedData",
+				"type": "bit"
+			},
+			{
+				"name": "IsActive",
+				"type": "bit"
+			},
+			{
+				"name": "StoreId",
+				"type": "int",
+				"precision": 10
+			}
+		],
+		"typeProperties": {
+			"schema": "dim",
+			"table": "Store"
+		}
+	},
+	"type": "Microsoft.Synapse/workspaces/datasets"
+}
