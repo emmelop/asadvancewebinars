@@ -80,6 +80,7 @@
 				"source": [
 					"## Create Azure ML Environment and linkt it to this Workspace:\n",
 					"Using T-SQP API we can create ML Workspace and all its context (KeyVault, Storage Account, App Insights...), and link it to the curren ASA Workspace as a linked service, you can use in your ML notebooks inside ASA.\n",
+					"### header h2\n",
 					""
 				]
 			},
