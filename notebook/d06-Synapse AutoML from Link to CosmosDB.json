@@ -22518,20 +22518,18 @@
 					"    print(ex)\n",
 					"\n",
 					"# Register the file dataset\n",
-					"'''\n",
-					"try:\n",
-					"    train = train.register(workspace=ws,\n",
-					"                                            name='surface_sales file',\n",
-					"                                            description='surface sales, accessing cosmos db analytical store',\n",
-					"                                            tags = {'format':'CSV'},\n",
-					"                                            create_new_version=True)\n",
-					"except Exception as ex:\n",
-					"    print(ex)\n",
-					"'''\n",
+					"#try:\n",
+					"#    train = train.register(workspace=ws,\n",
+					"#                                            name='surface_sales file',\n",
+					"#                                            description='surface sales, accessing cosmos db analytical store',\n",
+					"#                                            tags = {'format':'CSV'},\n",
+					"#                                            create_new_version=True)\n",
+					"#except Exception as ex:\n",
+					"#    print(ex)\n",
 					"print('Datasets registered')\n",
 					""
 				],
-				"execution_count": 19
+				"execution_count": 24
 			},
 			{
 				"cell_type": "markdown",
@@ -22573,7 +22571,7 @@
 					"\n",
 					""
 				],
-				"execution_count": 21
+				"execution_count": 27
 			},
 			{
 				"cell_type": "code",
