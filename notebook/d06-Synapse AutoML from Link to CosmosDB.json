@@ -42,8 +42,10 @@
 				"sparkVersion": "2.4",
 				"nodeCount": 10,
 				"cores": 4,
-				"memory": 28
-			}
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
@@ -76,7 +78,6 @@
 					"%%sql\n",
 					"create database if not exists RetailSalesDemoDB"
 				],
-				"attachments": null,
 				"execution_count": 0
 			},
 			{
@@ -85,8 +86,37 @@
 					"## Create Azure ML Environment and linkt it to this Workspace:\n",
 					"Using T-SQP API we can create ML Workspace and all its context (KeyVault, Storage Account, App Insights...), and link it to the curren ASA Workspace as a linked service, you can use in your ML notebooks inside ASA.\n",
 					""
+				]
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
+				},
+				"source": [
+					"# By default, dependent resources as well as the resource group will be created automatically. \r\n",
+					"# This code creates a workspace named myworkspace and a resource group named myresourcegroup in eastus2.\r\n",
+					"# DON'T RUN IT, AS IT HAS ALREADY DEPLOYED!\r\n",
+					"'''\r\n",
+					"from azureml.core import Workspace\r\n",
+					"\r\n",
+					"ws = Workspace.create(name='myworkspace',\r\n",
+					"               subscription_id='ad80bb35-cd7e-414e-84dc-af93d138fef0,\r\n",
+					"               resource_group='rg-demosynapse',\r\n",
+					"               create_resource_group=True,\r\n",
+					"               location='westeurope'\r\n",
+					"               )"
 				],
-				"attachments": null
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -122,7 +152,6 @@
 					"    spark.cosmos.container 'RetailSales'\n",
 					")"
 				],
-				"attachments": null,
 				"execution_count": 0
 			},
 			{
@@ -159,7 +188,6 @@
 					"    spark.cosmos.container 'StoreDemoGraphics'\n",
 					")"
 				],
-				"attachments": null,
 				"execution_count": 2
 			},
 			{
@@ -167,7 +195,6 @@
 				"source": [
 					""
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -204,7 +231,6 @@
 					")\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 3
 			},
 			{
@@ -266,7 +292,6 @@
 					"# to-do: export to csv\n",
 					"# to-do: register- as dataset?? "
 				],
-				"attachments": null,
 				"execution_count": 5
 			},
 			{
@@ -274,8 +299,7 @@
 				"source": [
 					"## Azure Machine Learning AutoML: build a Forecasting Model¶\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -322,7 +346,6 @@
 					"outputDf = pd.DataFrame(data = output, index = [''])\n",
 					"outputDf.T"
 				],
-				"attachments": null,
 				"execution_count": 6
 			},
 			{
@@ -330,8 +353,7 @@
 				"source": [
 					"## Data Preparation - Feature engineering, Splitting train & test datasets\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -397,7 +419,6 @@
 					"#to-do: register dataset into azure ml datasets\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 7
 			},
 			{
@@ -428,7 +449,6 @@
 					"print('Datasets registered')\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 8
 			},
 			{
@@ -437,8 +457,7 @@
 					"## Training the Models using AutoML Forecasting\n",
 					"Please notice that **compute_target** is commented, meaning that the <ins>model training will run locally in Synapse Spark</ins>.\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -472,7 +491,6 @@
 					"\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 7
 			},
 			{
@@ -493,7 +511,6 @@
 					"y_predictions, X_trans = fitted_model.forecast(X_test)\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 8
 			},
 			{
@@ -571,7 +588,6 @@
 					"plt.show()\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 9
 			},
 			{
@@ -583,7 +599,6 @@
 					"\"\"\"\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": null
 			}
 		]
