@@ -27,6 +27,10 @@
 			"synapse_widget": {
 				"version": "0.1"
 			},
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
 			"language_info": {
 				"name": "python"
 			},
@@ -42,88 +46,73 @@
 				"sparkVersion": "2.4",
 				"nodeCount": 10,
 				"cores": 4,
-				"memory": 28
-			}
+				"memory": 28,
+				"automaticScaleJobs": false
+			},
+			"sessionKeepAliveTimeout": 30
 		},
 		"cells": [
 			{
 				"cell_type": "code",
 				"metadata": {
-					"outputCollapsed": true,
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
 					"microsoft": {
 						"language": "sparksql"
 					},
-					"diagram": {
-						"activateDiagramType": 1,
-						"chartConfig": {
-							"category": "bar",
-							"keys": [],
-							"values": [],
-							"yLabel": "",
-							"xLabel": "",
-							"aggregation": "SUM",
-							"aggByBackend": false
-						},
-						"aggData": "{}",
-						"isSummary": false,
-						"previewData": {
-							"filter": null
-						},
-						"isSql": true
-					}
+					"collapsed": true
 				},
 				"source": [
 					"%%sql\n",
 					"create database if not exists RetailSalesDemoDB"
 				],
-				"attachments": null,
-				"execution_count": 0
+				"execution_count": null
 			},
 			{
 				"cell_type": "markdown",
 				"source": [
 					"## Create Azure ML Environment and linkt it to this Workspace:\n",
 					"Using T-SQP API we can create ML Workspace and all its context (KeyVault, Storage Account, App Insights...), and link it to the curren ASA Workspace as a linked service, you can use in your ML notebooks inside ASA.\n",
+					"### header h2\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
 				"metadata": {
-					"outputCollapsed": true,
-					"diagram": {
-						"activateDiagramType": 1,
-						"chartConfig": {
-							"category": "bar",
-							"keys": [],
-							"values": [],
-							"yLabel": "",
-							"xLabel": "",
-							"aggregation": "SUM",
-							"aggByBackend": false
-						},
-						"aggData": "{}",
-						"isSummary": false,
-						"previewData": {
-							"filter": null
-						},
-						"isSql": true
-					}
+					"jupyter": {
+						"source_hidden": false,
+						"outputs_hidden": false
+					},
+					"nteract": {
+						"transient": {
+							"deleting": false
+						}
+					},
+					"collapsed": true
 				},
 				"source": [
-					"# Run only in case you want to demo the creation of the ML environment from inside\n",
-					"# ASA. Otherwise an ML environment has been already provide by MLopez in this notebook\n",
-					"\n",
-					"%%sql\n",
-					"create table if not exists RetailSalesDemoDB.RetailSales using cosmos.olap options (\n",
-					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
-					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'RetailSales'\n",
-					")"
+					"# By default, dependent resources as well as the resource group will be created automatically. \r\n",
+					"# This code creates a workspace named myworkspace and a resource group named myresourcegroup in eastus2.\r\n",
+					"# DON'T RUN IT, AS IT HAS ALREADY DEPLOYED!\r\n",
+					"'''\r\n",
+					"from azureml.core import Workspace\r\n",
+					"\r\n",
+					"ws = Workspace.create(name='myworkspace',\r\n",
+					"               subscription_id='ad80bb35-cd7e-414e-84dc-af93d138fef0,\r\n",
+					"               resource_group='rg-demosynapse',\r\n",
+					"               create_resource_group=True,\r\n",
+					"               location='westeurope'\r\n",
+					"               )"
 				],
-				"attachments": null,
-				"execution_count": 0
+				"execution_count": null
 			},
 			{
 				"cell_type": "code",
@@ -149,25 +138,61 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
-					"create table if not exists RetailSalesDemoDB.StoreDemographics using cosmos.olap options (\n",
+					"create table if not exists RetailSalesDemoDB.RetailSales_1 using cosmos.olap options (\n",
+					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
+					"    spark.cosmos.preferredRegions 'westeurope',\n",
+					"    spark.cosmos.container 'RetailSales'\n",
+					")"
+				],
+				"execution_count": 7
+			},
+			{
+				"cell_type": "code",
+				"metadata": {
+					"outputCollapsed": true,
+					"microsoft": {
+						"language": "sparksql"
+					},
+					"diagram": {
+						"activateDiagramType": 1,
+						"chartConfig": {
+							"category": "bar",
+							"keys": [],
+							"values": [],
+							"yLabel": "",
+							"xLabel": "",
+							"aggregation": "SUM",
+							"aggByBackend": false
+						},
+						"aggData": "{}",
+						"isSummary": false,
+						"previewData": {
+							"filter": null
+						},
+						"isSql": true
+					},
+					"collapsed": false
+				},
+				"source": [
+					"%%sql\n",
+					"create table if not exists RetailSalesDemoDB.StoreDemographics_1 using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
 					"    spark.cosmos.container 'StoreDemoGraphics'\n",
 					")"
 				],
-				"attachments": null,
-				"execution_count": 2
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
 				"source": [
 					""
 				],
-				"attachments": null,
 				"execution_count": null
 			},
 			{
@@ -193,19 +218,19 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
-					"create table if not exists RetailSalesDemoDB.Product using cosmos.olap options (\n",
+					"create table if not exists RetailSalesDemoDB.Product_1 using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
 					"    spark.cosmos.container 'Products'\n",
 					")\n",
 					""
 				],
-				"attachments": null,
-				"execution_count": 3
+				"execution_count": 10
 			},
 			{
 				"cell_type": "code",
@@ -232,7 +257,8 @@
 							"filter": null
 						},
 						"isSql": false
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"data = spark.sql(\"select a.storeId \\\n",
@@ -255,10 +281,10 @@
 					"                       , a.advertising \\\n",
 					"                       , a.price \\\n",
 					"                       , a.weekStarting \\\n",
-					"                 from RetailSalesDemoDB.retailsales a \\\n",
-					"                 left join RetailSalesDemoDB.product b \\\n",
+					"                 from RetailSalesDemoDB.retailsales_1 a \\\n",
+					"                 left join RetailSalesDemoDB.product_1 b \\\n",
 					"                 on a.productcode = b.productcode \\\n",
-					"                 left join RetailSalesDemoDB.storedemographics c \\\n",
+					"                 left join RetailSalesDemoDB.storedemographics_1 c \\\n",
 					"                 on a.storeId = c.storeId \\\n",
 					"                 order by a.weekStarting, a.storeId, b.productCode\")\n",
 					"\n",
@@ -266,16 +292,14 @@
 					"# to-do: export to csv\n",
 					"# to-do: register- as dataset?? "
 				],
-				"attachments": null,
-				"execution_count": 5
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
 				"source": [
 					"## Azure Machine Learning AutoML: build a Forecasting Model¶\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -287,13 +311,14 @@
 					"var_aml_subscription_id = 'ad80bb35-cd7e-414e-84dc-af93d138fef0'\n",
 					"var_resource_group_name = \"rg-demosynapse\"\n",
 					"var_storage_account_name = \"stasamldatascientists01\"\n",
-					"var_mlwsname = \"asa-mlwspace-mlopez\"\n",
+					"var_mlwsname = \"azureml-synapse\"\n",
 					"var_mlwslocation = \"westeurope\"\n",
 					"\n",
 					"import azureml.core\n",
 					"import pandas as pd\n",
 					"import numpy as np\n",
 					"import logging\n",
+					"\n",
 					"from azureml.core.workspace import Workspace\n",
 					"from azureml.core import Workspace\n",
 					"from azureml.core.experiment import Experiment\n",
@@ -309,7 +334,7 @@
 					"ws = Workspace(subscription_id = subscription_id, resource_group = resource_group, workspace_name = workspace_name)\n",
 					"ws.write_config()\n",
 					"    \n",
-					"experiment_name = 'automl-surfaceforecasting'\n",
+					"experiment_name = 'automl-surfaceforecasting_2102'\n",
 					"experiment = Experiment(ws, experiment_name)\n",
 					"output = {}\n",
 					"output['Subscription ID'] = ws.subscription_id\n",
@@ -322,16 +347,14 @@
 					"outputDf = pd.DataFrame(data = output, index = [''])\n",
 					"outputDf.T"
 				],
-				"attachments": null,
-				"execution_count": 6
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
 				"source": [
 					"## Data Preparation - Feature engineering, Splitting train & test datasets\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -397,8 +420,7 @@
 					"#to-do: register dataset into azure ml datasets\n",
 					""
 				],
-				"attachments": null,
-				"execution_count": 7
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -407,7 +429,7 @@
 					"# Register the tabular dataset\n",
 					"try:\n",
 					"    train_dataset = train_dataset.register(workspace=ws, \n",
-					"                                        name='surface_sales tabular',\n",
+					"                                        name='surface_sales tabular_1',\n",
 					"                                        description='surface sales, accessing cosmos db analytical store',\n",
 					"                                        tags = {'format':'CSV'},\n",
 					"                                        create_new_version=True)\n",
@@ -415,21 +437,18 @@
 					"    print(ex)\n",
 					"\n",
 					"# Register the file dataset\n",
-					"'''\n",
-					"try:\n",
-					"    train = train.register(workspace=ws,\n",
-					"                                            name='surface_sales file',\n",
-					"                                            description='surface sales, accessing cosmos db analytical store',\n",
-					"                                            tags = {'format':'CSV'},\n",
-					"                                            create_new_version=True)\n",
-					"except Exception as ex:\n",
-					"    print(ex)\n",
-					"'''\n",
+					"#try:\n",
+					"#    train = train.register(workspace=ws,\n",
+					"#                                            name='surface_sales file',\n",
+					"#                                            description='surface sales, accessing cosmos db analytical store',\n",
+					"#                                            tags = {'format':'CSV'},\n",
+					"#                                            create_new_version=True)\n",
+					"#except Exception as ex:\n",
+					"#    print(ex)\n",
 					"print('Datasets registered')\n",
 					""
 				],
-				"attachments": null,
-				"execution_count": 8
+				"execution_count": 24
 			},
 			{
 				"cell_type": "markdown",
@@ -437,8 +456,7 @@
 					"## Training the Models using AutoML Forecasting\n",
 					"Please notice that **compute_target** is commented, meaning that the <ins>model training will run locally in Synapse Spark</ins>.\n",
 					""
-				],
-				"attachments": null
+				]
 			},
 			{
 				"cell_type": "code",
@@ -457,7 +475,7 @@
 					"automl_config = AutoMLConfig(task='forecasting',\n",
 					"                             debug_log='automl_ss_sales_errors.log',\n",
 					"                             primary_metric='normalized_mean_absolute_error',\n",
-					"                             experiment_timeout_hours=0.5,\n",
+					"                             experiment_timeout_hours=0.25,\n",
 					"                             training_data=train_dataset,\n",
 					"                             label_column_name=target_column_name,\n",
 					"                             #compute_target=compute_target,\n",
@@ -472,8 +490,7 @@
 					"\n",
 					""
 				],
-				"attachments": null,
-				"execution_count": 7
+				"execution_count": 27
 			},
 			{
 				"cell_type": "code",
@@ -493,7 +510,6 @@
 					"y_predictions, X_trans = fitted_model.forecast(X_test)\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 8
 			},
 			{
@@ -571,7 +587,6 @@
 					"plt.show()\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": 9
 			},
 			{
@@ -583,7 +598,6 @@
 					"\"\"\"\n",
 					""
 				],
-				"attachments": null,
 				"execution_count": null
 			}
 		]
