@@ -126,6 +126,9 @@
 				"cell_type": "code",
 				"metadata": {
 					"outputCollapsed": true,
+					"microsoft": {
+						"language": "sparksql"
+					},
 					"diagram": {
 						"activateDiagramType": 1,
 						"chartConfig": {
@@ -143,20 +146,18 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
-					"# Run only in case you want to demo the creation of the ML environment from inside\n",
-					"# ASA. Otherwise an ML environment has been already provide by MLopez in this notebook\n",
-					"\n",
 					"%%sql\n",
-					"create table if not exists RetailSalesDemoDB.RetailSales using cosmos.olap options (\n",
+					"create table if not exists RetailSalesDemoDB.RetailSales_1 using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'RetailSales_1'\n",
+					"    spark.cosmos.container 'RetailSales'\n",
 					")"
 				],
-				"execution_count": 1
+				"execution_count": 7
 			},
 			{
 				"cell_type": "code",
@@ -182,17 +183,18 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
-					"create table if not exists RetailSalesDemoDB.StoreDemographics using cosmos.olap options (\n",
+					"create table if not exists RetailSalesDemoDB.StoreDemographics_1 using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'StoreDemoGraphic_1'\n",
+					"    spark.cosmos.container 'StoreDemoGraphic'\n",
 					")"
 				],
-				"execution_count": 2
+				"execution_count": 4
 			},
 			{
 				"cell_type": "code",
@@ -224,18 +226,19 @@
 							"filter": null
 						},
 						"isSql": true
-					}
+					},
+					"collapsed": false
 				},
 				"source": [
 					"%%sql\n",
-					"create table if not exists RetailSalesDemoDB.Product using cosmos.olap options (\n",
+					"create table if not exists RetailSalesDemoDB.Product_1 using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'Products_1'\n",
+					"    spark.cosmos.container 'Products'\n",
 					")\n",
 					""
 				],
-				"execution_count": 3
+				"execution_count": 5
 			},
 			{
 				"cell_type": "code",
@@ -296,7 +299,7 @@
 					"# to-do: export to csv\n",
 					"# to-do: register- as dataset?? "
 				],
-				"execution_count": 5
+				"execution_count": 6
 			},
 			{
 				"cell_type": "markdown",
