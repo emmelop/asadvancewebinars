@@ -27,6 +27,10 @@
 			"synapse_widget": {
 				"version": "0.1"
 			},
+			"kernelspec": {
+				"name": "synapse_pyspark",
+				"display_name": "Synapse PySpark"
+			},
 			"language_info": {
 				"name": "python"
 			},
@@ -149,10 +153,10 @@
 					"create table if not exists RetailSalesDemoDB.RetailSales using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'RetailSales'\n",
+					"    spark.cosmos.container 'RetailSales_1'\n",
 					")"
 				],
-				"execution_count": 0
+				"execution_count": 1
 			},
 			{
 				"cell_type": "code",
@@ -185,7 +189,7 @@
 					"create table if not exists RetailSalesDemoDB.StoreDemographics using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'StoreDemoGraphics'\n",
+					"    spark.cosmos.container 'StoreDemoGraphic_1'\n",
 					")"
 				],
 				"execution_count": 2
@@ -227,7 +231,7 @@
 					"create table if not exists RetailSalesDemoDB.Product using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'Products'\n",
+					"    spark.cosmos.container 'Products_1'\n",
 					")\n",
 					""
 				],
@@ -281,10 +285,10 @@
 					"                       , a.advertising \\\n",
 					"                       , a.price \\\n",
 					"                       , a.weekStarting \\\n",
-					"                 from RetailSalesDemoDB.retailsales a \\\n",
-					"                 left join RetailSalesDemoDB.product b \\\n",
+					"                 from RetailSalesDemoDB.retailsales_1 a \\\n",
+					"                 left join RetailSalesDemoDB.product_1 b \\\n",
 					"                 on a.productcode = b.productcode \\\n",
-					"                 left join RetailSalesDemoDB.storedemographics c \\\n",
+					"                 left join RetailSalesDemoDB.storedemographics_1 c \\\n",
 					"                 on a.storeId = c.storeId \\\n",
 					"                 order by a.weekStarting, a.storeId, b.productCode\")\n",
 					"\n",
