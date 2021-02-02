@@ -191,10 +191,10 @@
 					"create table if not exists RetailSalesDemoDB.StoreDemographics_1 using cosmos.olap options (\n",
 					"    spark.synapse.linkedService 'connToCDB_RetailSales',\n",
 					"    spark.cosmos.preferredRegions 'westeurope',\n",
-					"    spark.cosmos.container 'StoreDemoGraphic'\n",
+					"    spark.cosmos.container 'StoreDemoGraphics'\n",
 					")"
 				],
-				"execution_count": 4
+				"execution_count": 9
 			},
 			{
 				"cell_type": "code",
