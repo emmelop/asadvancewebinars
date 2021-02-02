@@ -27,7 +27,7 @@
 			"synapse_widget": {
 				"version": "0.1",
 				"state": {
-					"a0a8672a-d5fe-4d63-bfb2-1d80f41ec330": {
+					"fb164006-2967-4f36-9ed6-d9215012f678": {
 						"type": "Synapse.DataFrame",
 						"sync_state": {
 							"table": {
@@ -22373,7 +22373,7 @@
 					"# to-do: export to csv\n",
 					"# to-do: register- as dataset?? "
 				],
-				"execution_count": 11
+				"execution_count": 14
 			},
 			{
 				"cell_type": "markdown",
@@ -22428,7 +22428,7 @@
 					"outputDf = pd.DataFrame(data = output, index = [''])\n",
 					"outputDf.T"
 				],
-				"execution_count": 12
+				"execution_count": 15
 			},
 			{
 				"cell_type": "markdown",
@@ -22501,7 +22501,7 @@
 					"#to-do: register dataset into azure ml datasets\n",
 					""
 				],
-				"execution_count": 7
+				"execution_count": 16
 			},
 			{
 				"cell_type": "code",
@@ -22510,7 +22510,7 @@
 					"# Register the tabular dataset\n",
 					"try:\n",
 					"    train_dataset = train_dataset.register(workspace=ws, \n",
-					"                                        name='surface_sales tabular',\n",
+					"                                        name='surface_sales tabular_1',\n",
 					"                                        description='surface sales, accessing cosmos db analytical store',\n",
 					"                                        tags = {'format':'CSV'},\n",
 					"                                        create_new_version=True)\n",
@@ -22531,7 +22531,7 @@
 					"print('Datasets registered')\n",
 					""
 				],
-				"execution_count": 8
+				"execution_count": 19
 			},
 			{
 				"cell_type": "markdown",
@@ -22573,7 +22573,7 @@
 					"\n",
 					""
 				],
-				"execution_count": 7
+				"execution_count": 21
 			},
 			{
 				"cell_type": "code",
